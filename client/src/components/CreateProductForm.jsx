@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { PlusCircle, Upload, Loader } from "lucide-react";
 import { useProductStore } from "../stores/useProductStore";
-
-const categories = ["jeans", "t-shirts", "shoes", "glasses", "jackets", "suits", "bags"];
+import { useCategoryStore } from "../stores/useCategoryStore";
 
 const CreateProductForm = () => {
 	const [newProduct, setNewProduct] = useState({
@@ -15,6 +14,11 @@ const CreateProductForm = () => {
 	});
 
 	const { createProduct, loading } = useProductStore();
+	const { categories, fetchCategories } = useCategoryStore();
+
+	useEffect(() => {
+		fetchCategories();
+	}, [fetchCategories]);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -117,8 +121,8 @@ const CreateProductForm = () => {
 					>
 						<option value=''>Select a category</option>
 						{categories.map((category) => (
-							<option key={category} value={category}>
-								{category}
+							<option key={category._id} value={category.slug}>
+								{category.name}
 							</option>
 						))}
 					</select>

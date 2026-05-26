@@ -1,24 +1,18 @@
 import { useEffect } from "react";
 import CategoryItem from "../components/CategoryItem";
 import { useProductStore } from "../stores/useProductStore";
+import { useCategoryStore } from "../stores/useCategoryStore";
 import FeaturedProducts from "../components/FeaturedProducts";
-
-const categories = [
-	{ href: "/jeans", name: "Jeans", imageUrl: "/jeans.jpg" },
-	{ href: "/t-shirts", name: "T-shirts", imageUrl: "/tshirts.jpg" },
-	{ href: "/shoes", name: "Shoes", imageUrl: "/shoes.jpg" },
-	{ href: "/glasses", name: "Glasses", imageUrl: "/glasses.png" },
-	{ href: "/jackets", name: "Jackets", imageUrl: "/jackets.jpg" },
-	{ href: "/suits", name: "Suits", imageUrl: "/suits.jpg" },
-	{ href: "/bags", name: "Bags", imageUrl: "/bags.jpg" },
-];
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const HomePage = () => {
 	const { fetchFeaturedProducts, products, isLoading } = useProductStore();
+	const { categories, fetchCategories, loading: categoriesLoading } = useCategoryStore();
 
 	useEffect(() => {
 		fetchFeaturedProducts();
-	}, [fetchFeaturedProducts]);
+		fetchCategories();
+	}, [fetchFeaturedProducts, fetchCategories]);
 
 	return (
 		<div className='relative min-h-screen text-white overflow-hidden'>
@@ -30,11 +24,25 @@ const HomePage = () => {
 					Discover the latest trends in eco-friendly fashion
 				</p>
 
-				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-					{categories.map((category) => (
-						<CategoryItem category={category} key={category.name} />
-					))}
-				</div>
+				{categoriesLoading ? (
+					<div className='flex justify-center items-center py-20'>
+						<LoadingSpinner />
+					</div>
+				) : categories.length === 0 ? (
+					<p className='text-center text-gray-400 text-lg py-10'>No categories found. Start by creating one in the Admin Dashboard!</p>
+				) : (
+					<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+						{categories.map((category) => (
+							<CategoryItem
+								category={{
+									...category,
+									href: "/" + category.slug,
+								}}
+								key={category._id}
+							/>
+						))}
+					</div>
+				)}
 
 				{!isLoading && products.length > 0 && <FeaturedProducts featuredProducts={products} />}
 			</div>
