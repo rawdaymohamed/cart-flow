@@ -21,11 +21,13 @@
 - 🛡️ Data Protection
 - 🚀Caching with Redis
 - ⌛ And a lot more...
+- create category
+- delete category
 
 ## TODO
 
-- Add create category
-- Add delete category
+- Users can add reviews for projects they bought
+- Admin can delete a review
 
 ### Setup .env file
 
@@ -58,4 +60,3 @@ npm run build
 ```shell
 npm run start
 ```
-# cart-flow
