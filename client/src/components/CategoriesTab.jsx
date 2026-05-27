@@ -45,12 +45,12 @@ const CategoriesTab = () => {
 		<div className='grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto'>
 			{/* Create Category Form */}
 			<motion.div
-				className='bg-gray-800 shadow-lg rounded-lg p-8 border border-gray-700 h-fit'
+				className='bg-slate-800 shadow-lg rounded-lg p-8 border border-slate-700 h-fit'
 				initial={{ opacity: 0, x: -30 }}
 				animate={{ opacity: 1, x: 0 }}
 				transition={{ duration: 0.6 }}
 			>
-				<h2 className='text-2xl font-semibold mb-6 text-emerald-300 flex items-center gap-2'>
+				<h2 className='text-2xl font-semibold mb-6 text-blue-300 flex items-center gap-2'>
 					<Layers className='w-6 h-6' /> Create New Category
 				</h2>
 
@@ -64,13 +64,13 @@ const CategoriesTab = () => {
 							id='cat-name'
 							value={name}
 							onChange={(e) => setName(e.target.value)}
-							className='w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors'
+							className='w-full bg-slate-700 border border-slate-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors'
 							placeholder='e.g., T-shirts, Shoes, Bags'
 							required
 						/>
 					</div>
 
-					<div className='flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-lg p-6 bg-gray-750 hover:bg-gray-700 transition-colors relative'>
+					<div className='flex flex-col items-center justify-center border-2 border-dashed border-slate-600 rounded-lg p-6 bg-slate-900/50 hover:bg-slate-700 transition-colors relative'>
 						<input
 							type='file'
 							id='cat-image'
@@ -88,7 +88,7 @@ const CategoriesTab = () => {
 								/>
 								<label
 									htmlFor='cat-image'
-									className='cursor-pointer text-sm text-emerald-400 hover:text-emerald-300 font-medium block'
+									className='cursor-pointer text-sm text-blue-400 hover:text-blue-300 font-medium block'
 								>
 									Change Image
 								</label>
@@ -98,7 +98,7 @@ const CategoriesTab = () => {
 								htmlFor='cat-image'
 								className='cursor-pointer flex flex-col items-center gap-3 w-full h-full text-center'
 							>
-								<div className='p-3 bg-gray-700 rounded-full text-gray-300 group-hover:text-white transition-colors'>
+								<div className='p-3 bg-slate-700 rounded-full text-gray-300 group-hover:text-white transition-colors'>
 									<Upload className='h-6 h-6' />
 								</div>
 								<div>
@@ -112,7 +112,7 @@ const CategoriesTab = () => {
 					<button
 						type='submit'
 						disabled={loading || uploading || !name || !image}
-						className='w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+						className='w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
 					>
 						{uploading || loading ? (
 							<>
@@ -131,16 +131,16 @@ const CategoriesTab = () => {
 
 			{/* Existing Categories List */}
 			<motion.div
-				className='bg-gray-800 shadow-lg rounded-lg p-8 border border-gray-700'
+				className='bg-slate-800 shadow-lg rounded-lg p-8 border border-slate-700'
 				initial={{ opacity: 0, x: 30 }}
 				animate={{ opacity: 1, x: 0 }}
 				transition={{ duration: 0.6 }}
 			>
-				<h2 className='text-2xl font-semibold mb-6 text-emerald-300'>Existing Categories</h2>
+				<h2 className='text-2xl font-semibold mb-6 text-blue-300'>Existing Categories</h2>
 
 				{loading && categories.length === 0 ? (
 					<div className='flex justify-center items-center py-12'>
-						<Loader className='animate-spin h-8 w-8 text-emerald-500' />
+						<Loader className='animate-spin h-8 w-8 text-blue-500' />
 					</div>
 				) : categories.length === 0 ? (
 					<div className='text-center py-12 text-gray-400'>
@@ -157,17 +157,17 @@ const CategoriesTab = () => {
 								initial={{ opacity: 0, y: 10 }}
 								animate={{ opacity: 1, y: 0 }}
 								exit={{ opacity: 0, y: -10 }}
-								className='flex items-center justify-between p-4 bg-gray-700 rounded-lg border border-gray-650 hover:border-gray-550 transition-colors'
+								className='flex items-center justify-between p-4 bg-slate-700 rounded-lg border border-slate-600 hover:border-slate-500 transition-colors'
 							>
 								<div className='flex items-center gap-4'>
 									<img
 										src={category.imageUrl}
 										alt={category.name}
-										className='w-16 h-16 rounded-md object-cover border border-gray-600 shadow-sm'
+										className='w-16 h-16 rounded-md object-cover border border-slate-650 shadow-sm'
 									/>
 									<div>
 										<h3 className='text-white font-semibold text-lg'>{category.name}</h3>
-										<p className='text-emerald-400 text-xs font-mono mt-0.5'>/{category.slug}</p>
+										<p className='text-blue-400 text-xs font-mono mt-0.5'>/{category.slug}</p>
 									</div>
 								</div>
 

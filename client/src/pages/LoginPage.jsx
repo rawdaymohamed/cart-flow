@@ -27,7 +27,7 @@ const LoginPage = () => {
           ease: "easeOut",
         }}
       >
-        <h2 className="mt-6 text-3xl font-extrabold text-center text-emerald-400">
+        <h2 className="mt-6 text-3xl font-extrabold text-center text-blue-400">
           Welcome Back
         </h2>
       </motion.div>
@@ -42,7 +42,7 @@ const LoginPage = () => {
           delay: 0.3,
         }}
       >
-        <div className="px-4 py-8 bg-gray-800 shadow sm:rounded-lg sm:px-10">
+        <div className="px-4 py-8 bg-slate-800 shadow sm:rounded-lg sm:px-10">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
@@ -61,7 +61,7 @@ const LoginPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-slate-700 border border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="you@example.com"
                 />
               </div>
@@ -84,7 +84,7 @@ const LoginPage = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-slate-700 border border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="••••••••"
                 />
               </div>
@@ -92,7 +92,7 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out border border-transparent rounded-md shadow-sm bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50"
+              className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out border border-transparent rounded-md shadow-sm bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
               disabled={loading}
             >
               {loading ? (
@@ -116,7 +116,7 @@ const LoginPage = () => {
             Not a member?{" "}
             <Link
               to="/signup"
-              className="font-medium text-emerald-400 hover:text-emerald-300"
+              className="font-medium text-blue-400 hover:text-blue-300"
             >
               Sign up now <ArrowRight className="inline w-4 h-4" />
             </Link>

@@ -27,7 +27,7 @@ const SignUpPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <h2 className="mt-6 text-3xl font-extrabold text-center text-emerald-400">
+        <h2 className="mt-6 text-3xl font-extrabold text-center text-blue-400">
           Create your account
         </h2>
       </motion.div>
@@ -38,7 +38,7 @@ const SignUpPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3, ease: "easeInOut" }}
       >
-        <div className="px-4 py-8 bg-gray-800 shadow sm:rounded-lg sm:px-10">
+        <div className="px-4 py-8 bg-slate-800 shadow sm:rounded-lg sm:px-10">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
@@ -59,7 +59,7 @@ const SignUpPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-slate-700 border border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="John Doe"
                 />
               </div>
@@ -84,7 +84,7 @@ const SignUpPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-slate-700 border border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="you@example.com"
                 />
               </div>
@@ -109,7 +109,7 @@ const SignUpPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-slate-700 border border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="••••••••"
                 />
               </div>
@@ -137,7 +137,7 @@ const SignUpPage = () => {
                       confirmPassword: e.target.value,
                     })
                   }
-                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-slate-700 border border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="••••••••"
                 />
               </div>
@@ -145,7 +145,7 @@ const SignUpPage = () => {
 
             <button
               type="submit"
-              className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out border border-transparent rounded-md shadow-sm bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50"
+              className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out border border-transparent rounded-md shadow-sm bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
               disabled={loading}
             >
               {loading ? (
@@ -169,7 +169,7 @@ const SignUpPage = () => {
             Already have an account?{" "}
             <Link
               to="/login"
-              className="font-medium text-emerald-400 hover:text-emerald-300"
+              className="font-medium text-blue-400 hover:text-blue-300"
             >
               Login here <ArrowRight className="inline w-4 h-4" />
             </Link>

@@ -50,29 +50,29 @@ const AnalyticsTab = () => {
           title="Total Users"
           value={analyticsData.users.toLocaleString()}
           icon={Users}
-          color="from-emerald-500 to-teal-700"
+          color="from-blue-500 to-indigo-700"
         />
         <AnalyticsCard
           title="Total Products"
           value={analyticsData.products.toLocaleString()}
           icon={Package}
-          color="from-emerald-500 to-green-700"
+          color="from-blue-500 to-purple-700"
         />
         <AnalyticsCard
           title="Total Sales"
           value={analyticsData.totalSales.toLocaleString()}
           icon={ShoppingCart}
-          color="from-emerald-500 to-cyan-700"
+          color="from-blue-500 to-cyan-700"
         />
         <AnalyticsCard
           title="Total Revenue"
           value={`$${analyticsData.totalRevenue.toLocaleString()}`}
           icon={DollarSign}
-          color="from-emerald-500 to-lime-700"
+          color="from-blue-500 to-blue-700"
         />
       </div>
       <motion.div
-        className="p-6 rounded-lg shadow-lg bg-gray-800/60"
+        className="p-6 rounded-lg shadow-lg bg-slate-800/60 border border-slate-700"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.25 }}
@@ -89,7 +89,7 @@ const AnalyticsTab = () => {
               yAxisId="left"
               type="monotone"
               dataKey="sales"
-              stroke="#10B981"
+              stroke="#6366F1"
               activeDot={{ r: 8 }}
               name="Sales"
             />
@@ -111,19 +111,19 @@ export default AnalyticsTab;
 
 const AnalyticsCard = ({ title, value, icon: Icon, color }) => (
   <motion.div
-    className={`bg-gray-800 rounded-lg p-6 shadow-lg overflow-hidden relative ${color}`}
+    className={`bg-slate-800 rounded-lg p-6 shadow-lg overflow-hidden relative border border-slate-700 ${color}`}
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
   >
     <div className="flex items-center justify-between">
       <div className="z-10">
-        <p className="mb-1 text-sm font-semibold text-emerald-300">{title}</p>
+        <p className="mb-1 text-sm font-semibold text-blue-300">{title}</p>
         <h3 className="text-3xl font-bold text-white">{value}</h3>
       </div>
     </div>
-    <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 to-emerald-900 opacity-30" />
-    <div className="absolute opacity-50 -bottom-4 -right-4 text-emerald-800">
+    <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-900 opacity-30" />
+    <div className="absolute opacity-50 -bottom-4 -right-4 text-blue-800">
       <Icon className="w-32 h-32" />
     </div>
   </motion.div>

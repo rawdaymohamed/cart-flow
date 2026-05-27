@@ -9,13 +9,13 @@ const ProductsList = () => {
 
 	return (
 		<motion.div
-			className='bg-gray-800 shadow-lg rounded-lg overflow-hidden max-w-4xl mx-auto'
+			className='bg-slate-800 shadow-lg rounded-lg overflow-hidden max-w-4xl mx-auto border border-slate-700'
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.8 }}
 		>
-			<table className=' min-w-full divide-y divide-gray-700'>
-				<thead className='bg-gray-700'>
+			<table className=' min-w-full divide-y divide-slate-700'>
+				<thead className='bg-slate-700'>
 					<tr>
 						<th
 							scope='col'
@@ -51,9 +51,9 @@ const ProductsList = () => {
 					</tr>
 				</thead>
 
-				<tbody className='bg-gray-800 divide-y divide-gray-700'>
+				<tbody className='bg-slate-800 divide-y divide-slate-700'>
 					{products?.map((product) => (
-						<tr key={product._id} className='hover:bg-gray-700'>
+						<tr key={product._id} className='hover:bg-slate-750'>
 							<td className='px-6 py-4 whitespace-nowrap'>
 								<div className='flex items-center'>
 									<div className='flex-shrink-0 h-10 w-10'>
@@ -78,7 +78,7 @@ const ProductsList = () => {
 								<button
 									onClick={() => toggleFeaturedProduct(product._id)}
 									className={`p-1 rounded-full ${
-										product.isFeatured ? "bg-yellow-400 text-gray-900" : "bg-gray-600 text-gray-300"
+										product.isFeatured ? "bg-yellow-400 text-slate-900" : "bg-slate-600 text-gray-300"
 									} hover:bg-yellow-500 transition-colors duration-200`}
 								>
 									<Star className='h-5 w-5' />
