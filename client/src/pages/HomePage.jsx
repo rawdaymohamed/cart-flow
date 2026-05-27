@@ -6,47 +6,55 @@ import FeaturedProducts from "../components/FeaturedProducts";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const HomePage = () => {
-	const { fetchFeaturedProducts, products, isLoading } = useProductStore();
-	const { categories, fetchCategories, loading: categoriesLoading } = useCategoryStore();
+  const { fetchFeaturedProducts, products, isLoading } = useProductStore();
+  const {
+    categories,
+    fetchCategories,
+    loading: categoriesLoading,
+  } = useCategoryStore();
 
-	useEffect(() => {
-		fetchFeaturedProducts();
-		fetchCategories();
-	}, [fetchFeaturedProducts, fetchCategories]);
+  useEffect(() => {
+    fetchFeaturedProducts();
+    fetchCategories();
+  }, [fetchFeaturedProducts, fetchCategories]);
 
-	return (
-		<div className='relative min-h-screen text-white overflow-hidden'>
-			<div className='relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16'>
-				<h1 className='text-center text-5xl sm:text-6xl font-bold text-white mb-4'>
-					Explore Our Categories
-				</h1>
-				<p className='text-center text-xl text-gray-300 mb-12'>
-					Discover the latest trends in eco-friendly fashion
-				</p>
+  return (
+    <div className="relative min-h-screen overflow-hidden text-white">
+      <div className="relative z-10 px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <h1 className="mb-4 text-5xl font-bold text-center text-white sm:text-6xl">
+          Explore Our Categories
+        </h1>
+        <p className="mb-12 text-xl text-center text-gray-300">
+          Discover the latest trends in eco-friendly fashion
+        </p>
 
-				{categoriesLoading ? (
-					<div className='flex justify-center items-center py-20'>
-						<LoadingSpinner />
-					</div>
-				) : categories.length === 0 ? (
-					<p className='text-center text-gray-400 text-lg py-10'>No categories found. Start by creating one in the Admin Dashboard!</p>
-				) : (
-					<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-						{categories.map((category) => (
-							<CategoryItem
-								category={{
-									...category,
-									href: "/" + category.slug,
-								}}
-								key={category._id}
-							/>
-						))}
-					</div>
-				)}
+        {categoriesLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <LoadingSpinner />
+          </div>
+        ) : categories.length === 0 ? (
+          <p className="py-10 text-lg text-center text-gray-400">
+            No categories found. Start by creating one in the Admin Dashboard!
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {categories.map((category) => (
+              <CategoryItem
+                category={{
+                  ...category,
+                  href: "/" + category.slug,
+                }}
+                key={category._id}
+              />
+            ))}
+          </div>
+        )}
 
-				{!isLoading && products.length > 0 && <FeaturedProducts featuredProducts={products} />}
-			</div>
-		</div>
-	);
+        {!isLoading && products.length > 0 && (
+          <FeaturedProducts featuredProducts={products} />
+        )}
+      </div>
+    </div>
+  );
 };
 export default HomePage;
