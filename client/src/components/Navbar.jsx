@@ -7,9 +7,8 @@ const Navbar = () => {
   const { user, logout } = useUserStore();
   const isAdmin = user?.role === "admin";
   const { cart } = useCartStore();
-
   return (
-    <header className="fixed top-0 left-0 z-40 w-full transition-all duration-300 bg-slate-900 border-b shadow-lg bg-opacity-90 backdrop-blur-md border-blue-800">
+    <header className="fixed top-0 left-0 z-40 w-full transition-all duration-300 bg-slate-900/80 backdrop-blur-md border-b border-slate-800/80 shadow-md">
       <div className="container px-4 py-3 mx-auto">
         <div className="flex flex-wrap items-center justify-between">
           <Link
