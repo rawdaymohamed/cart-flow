@@ -44,7 +44,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 						>
 							{featuredProducts?.map((product) => (
 								<div key={product._id} className='w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 flex-shrink-0 px-2'>
-									<div className='bg-white bg-opacity-10 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden h-full transition-all duration-300 hover:shadow-xl border border-blue-500/30'>
+									<div className='bg-surface/90 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden h-full transition-all duration-300 hover:shadow-xl border border-accent/25'>
 										<div className='overflow-hidden'>
 											<img
 												src={product.image}
@@ -54,12 +54,12 @@ const FeaturedProducts = ({ featuredProducts }) => {
 										</div>
 										<div className='p-4'>
 											<h3 className='text-lg font-semibold mb-2 text-white'>{product.name}</h3>
-											<p className='text-blue-300 font-medium mb-4'>
+											<p className='text-accentSoft font-medium mb-4'>
 												${product.price.toFixed(2)}
 											</p>
 											<button
 												onClick={() => addToCart(product)}
-												className='w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded transition-colors duration-300 
+												className='w-full bg-accent hover:bg-accentHover text-ink font-semibold py-2 px-4 rounded transition-colors duration-300 
 												flex items-center justify-center'
 											>
 												<ShoppingCart className='w-5 h-5 mr-2' />
@@ -75,7 +75,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 						onClick={prevSlide}
 						disabled={isStartDisabled}
 						className={`absolute top-1/2 -left-4 transform -translate-y-1/2 p-2 rounded-full transition-colors duration-300 ${
-							isStartDisabled ? "bg-slate-600 cursor-not-allowed text-slate-400" : "bg-blue-600 hover:bg-blue-500 text-white"
+							isStartDisabled ? "bg-panelAlt cursor-not-allowed text-mutedAlt" : "bg-accent hover:bg-accentHover text-ink"
 						}`}
 					>
 						<ChevronLeft className='w-6 h-6' />
@@ -85,7 +85,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 						onClick={nextSlide}
 						disabled={isEndDisabled}
 						className={`absolute top-1/2 -right-4 transform -translate-y-1/2 p-2 rounded-full transition-colors duration-300 ${
-							isEndDisabled ? "bg-slate-600 cursor-not-allowed text-slate-400" : "bg-blue-600 hover:bg-blue-500 text-white"
+							isEndDisabled ? "bg-panelAlt cursor-not-allowed text-mutedAlt" : "bg-accent hover:bg-accentHover text-ink"
 						}`}
 					>
 						<ChevronRight className='w-6 h-6' />

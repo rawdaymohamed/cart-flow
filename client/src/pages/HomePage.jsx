@@ -24,7 +24,7 @@ const HomePage = () => {
         <h1 className="mb-4 text-5xl font-bold text-center text-white sm:text-6xl">
           Explore Our Categories
         </h1>
-        <p className="mb-12 text-xl text-center text-gray-300">
+        <p className="mb-12 text-xl text-center text-muted">
           Discover the latest trends in eco-friendly fashion
         </p>
 
@@ -33,7 +33,7 @@ const HomePage = () => {
             <LoadingSpinner />
           </div>
         ) : categories.length === 0 ? (
-          <p className="py-10 text-lg text-center text-gray-400">
+          <p className="py-10 text-lg text-center text-mutedAlt">
             No categories found. Start by creating one in the Admin Dashboard!
           </p>
         ) : (

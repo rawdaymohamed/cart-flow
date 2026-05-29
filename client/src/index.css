@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	html,
+	body,
+	#root {
+		min-height: 100%;
+	}
+
+	body {
+		@apply bg-ink text-white;
+		background-image:
+			radial-gradient(circle at top, rgba(212, 175, 55, 0.12), transparent 34%),
+			linear-gradient(180deg, #07111f 0%, #0b1424 55%, #07111f 100%);
+		background-attachment: fixed;
+	}
+}

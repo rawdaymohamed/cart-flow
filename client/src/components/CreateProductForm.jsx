@@ -45,16 +45,16 @@ const CreateProductForm = () => {
 
 	return (
 		<motion.div
-			className='bg-slate-800 shadow-lg rounded-lg p-8 mb-8 max-w-xl mx-auto'
+			className='bg-panel shadow-lg rounded-lg p-8 mb-8 max-w-xl mx-auto border border-line'
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.8 }}
 		>
-			<h2 className='text-2xl font-semibold mb-6 text-blue-300'>Create New Product</h2>
+			<h2 className='text-2xl font-semibold mb-6 text-accentSoft'>Create New Product</h2>
 
 			<form onSubmit={handleSubmit} className='space-y-4'>
 				<div>
-					<label htmlFor='name' className='block text-sm font-medium text-gray-300'>
+					<label htmlFor='name' className='block text-sm font-medium text-muted'>
 						Product Name
 					</label>
 					<input
@@ -63,15 +63,15 @@ const CreateProductForm = () => {
 						name='name'
 						value={newProduct.name}
 						onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-						className='mt-1 block w-full bg-slate-700 border border-slate-600 rounded-md shadow-sm py-2
+						className='mt-1 block w-full bg-panelAlt border border-line rounded-md shadow-sm py-2
 						 px-3 text-white focus:outline-none focus:ring-2
-						focus:ring-blue-500 focus:border-blue-500'
+						focus:ring-accent focus:border-accent'
 						required
 					/>
 				</div>
 
 				<div>
-					<label htmlFor='description' className='block text-sm font-medium text-gray-300'>
+					<label htmlFor='description' className='block text-sm font-medium text-muted'>
 						Description
 					</label>
 					<textarea
@@ -80,15 +80,15 @@ const CreateProductForm = () => {
 						value={newProduct.description}
 						onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
 						rows='3'
-						className='mt-1 block w-full bg-slate-700 border border-slate-600 rounded-md shadow-sm
-						 py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 
-						 focus:border-blue-500'
+						className='mt-1 block w-full bg-panelAlt border border-line rounded-md shadow-sm
+						 py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-accent 
+						 focus:border-accent'
 						required
 					/>
 				</div>
 
 				<div>
-					<label htmlFor='price' className='block text-sm font-medium text-gray-300'>
+					<label htmlFor='price' className='block text-sm font-medium text-muted'>
 						Price
 					</label>
 					<input
@@ -98,15 +98,15 @@ const CreateProductForm = () => {
 						value={newProduct.price}
 						onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
 						step='0.01'
-						className='mt-1 block w-full bg-slate-700 border border-slate-600 rounded-md shadow-sm 
-						py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500
-						 focus:border-blue-500'
+						className='mt-1 block w-full bg-panelAlt border border-line rounded-md shadow-sm 
+						py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-accent
+						 focus:border-accent'
 						required
 					/>
 				</div>
 
 				<div>
-					<label htmlFor='category' className='block text-sm font-medium text-gray-300'>
+					<label htmlFor='category' className='block text-sm font-medium text-muted'>
 						Category
 					</label>
 					<select
@@ -114,9 +114,9 @@ const CreateProductForm = () => {
 						name='category'
 						value={newProduct.category}
 						onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-						className='mt-1 block w-full bg-slate-700 border border-slate-600 rounded-md
+						className='mt-1 block w-full bg-panelAlt border border-line rounded-md
 						 shadow-sm py-2 px-3 text-white focus:outline-none 
-						 focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+						 focus:ring-2 focus:ring-accent focus:border-accent'
 						required
 					>
 						<option value=''>Select a category</option>
@@ -132,19 +132,19 @@ const CreateProductForm = () => {
 					<input type='file' id='image' className='sr-only' accept='image/*' onChange={handleImageChange} />
 					<label
 						htmlFor='image'
-						className='cursor-pointer bg-slate-700 py-2 px-3 border border-slate-600 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-300 hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+						className='cursor-pointer bg-panelAlt py-2 px-3 border border-line rounded-md shadow-sm text-sm leading-4 font-medium text-muted hover:bg-line focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent'
 					>
 						<Upload className='h-5 w-5 inline-block mr-2' />
 						Upload Image
 					</label>
-					{newProduct.image && <span className='ml-3 text-sm text-gray-400'>Image uploaded </span>}
+					{newProduct.image && <span className='ml-3 text-sm text-mutedAlt'>Image uploaded </span>}
 				</div>
 
 				<button
 					type='submit'
 					className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md 
-					shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 
-					focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50'
+					shadow-sm text-sm font-medium text-ink bg-accent hover:bg-accentHover 
+					focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50'
 					disabled={loading}
 				>
 					{loading ? (

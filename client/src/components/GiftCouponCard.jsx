@@ -26,22 +26,22 @@ const GiftCouponCard = () => {
 
 	return (
 		<motion.div
-			className='space-y-4 rounded-lg border border-slate-700 bg-slate-800 p-4 shadow-sm sm:p-6'
+			className='space-y-4 rounded-lg border border-line bg-panel p-4 shadow-sm sm:p-6'
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.5, delay: 0.2 }}
 		>
 			<div className='space-y-4'>
 				<div>
-					<label htmlFor='voucher' className='mb-2 block text-sm font-medium text-gray-300'>
+					<label htmlFor='voucher' className='mb-2 block text-sm font-medium text-muted'>
 						Do you have a voucher or gift card?
 					</label>
 					<input
 						type='text'
 						id='voucher'
-						className='block w-full rounded-lg border border-slate-600 bg-slate-700 
-            p-2.5 text-sm text-white placeholder-gray-400 focus:border-blue-500 
-            focus:ring-blue-500'
+						className='block w-full rounded-lg border border-line bg-panelAlt 
+            p-2.5 text-sm text-white placeholder-mutedAlt focus:border-accent 
+            focus:ring-accent'
 						placeholder='Enter code here'
 						value={userInputCode}
 						onChange={(e) => setUserInputCode(e.target.value)}
@@ -51,7 +51,7 @@ const GiftCouponCard = () => {
 
 				<motion.button
 					type='button'
-					className='flex w-full items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300'
+					className='flex w-full items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-ink hover:bg-accentHover focus:outline-none focus:ring-4 focus:ring-accentSoft'
 					whileHover={{ scale: 1.05 }}
 					whileTap={{ scale: 0.95 }}
 					onClick={handleApplyCoupon}
@@ -61,9 +61,9 @@ const GiftCouponCard = () => {
 			</div>
 			{isCouponApplied && coupon && (
 				<div className='mt-4'>
-					<h3 className='text-lg font-medium text-gray-300'>Applied Coupon</h3>
+					<h3 className='text-lg font-medium text-muted'>Applied Coupon</h3>
 
-					<p className='mt-2 text-sm text-gray-400'>
+					<p className='mt-2 text-sm text-mutedAlt'>
 						{coupon.code} - {coupon.discountPercentage}% off
 					</p>
 
@@ -83,8 +83,8 @@ const GiftCouponCard = () => {
 
 			{coupon && (
 				<div className='mt-4'>
-					<h3 className='text-lg font-medium text-gray-300'>Your Available Coupon:</h3>
-					<p className='mt-2 text-sm text-gray-400'>
+					<h3 className='text-lg font-medium text-muted'>Your Available Coupon:</h3>
+					<p className='mt-2 text-sm text-mutedAlt'>
 						{coupon.code} - {coupon.discountPercentage}% off
 					</p>
 				</div>

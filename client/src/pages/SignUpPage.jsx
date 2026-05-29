@@ -27,7 +27,7 @@ const SignUpPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <h2 className="mt-6 text-3xl font-extrabold text-center text-blue-400">
+        <h2 className="mt-6 text-3xl font-extrabold text-center text-accent">
           Create your account
         </h2>
       </motion.div>
@@ -38,18 +38,18 @@ const SignUpPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3, ease: "easeInOut" }}
       >
-        <div className="px-4 py-8 bg-slate-800 shadow sm:rounded-lg sm:px-10">
+        <div className="px-4 py-8 bg-panel shadow sm:rounded-lg sm:px-10 border border-line">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-muted"
               >
                 Full name
               </label>
               <div className="relative mt-1 rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <User className="w-5 h-5 text-gray-400" aria-hidden="true" />
+                  <User className="w-5 h-5 text-mutedAlt" aria-hidden="true" />
                 </div>
                 <input
                   id="name"
@@ -59,7 +59,7 @@ const SignUpPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-slate-700 border border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 placeholder-mutedAlt bg-panelAlt border border-line rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                   placeholder="John Doe"
                 />
               </div>
@@ -68,13 +68,13 @@ const SignUpPage = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-muted"
               >
                 Email address
               </label>
               <div className="relative mt-1 rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <Mail className="w-5 h-5 text-gray-400" aria-hidden="true" />
+                  <Mail className="w-5 h-5 text-mutedAlt" aria-hidden="true" />
                 </div>
                 <input
                   id="email"
@@ -84,7 +84,7 @@ const SignUpPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-slate-700 border border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 placeholder-mutedAlt bg-panelAlt border border-line rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                   placeholder="you@example.com"
                 />
               </div>
@@ -93,13 +93,13 @@ const SignUpPage = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-muted"
               >
                 Password
               </label>
               <div className="relative mt-1 rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <Lock className="w-5 h-5 text-gray-400" aria-hidden="true" />
+                  <Lock className="w-5 h-5 text-mutedAlt" aria-hidden="true" />
                 </div>
                 <input
                   id="password"
@@ -109,7 +109,7 @@ const SignUpPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-slate-700 border border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 placeholder-mutedAlt bg-panelAlt border border-line rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                   placeholder="••••••••"
                 />
               </div>
@@ -118,13 +118,13 @@ const SignUpPage = () => {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-muted"
               >
                 Confirm Password
               </label>
               <div className="relative mt-1 rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <Lock className="w-5 h-5 text-gray-400" aria-hidden="true" />
+                  <Lock className="w-5 h-5 text-mutedAlt" aria-hidden="true" />
                 </div>
                 <input
                   id="confirmPassword"
@@ -137,7 +137,7 @@ const SignUpPage = () => {
                       confirmPassword: e.target.value,
                     })
                   }
-                  className="block w-full px-3 py-2 pl-10 placeholder-gray-400 bg-slate-700 border border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 placeholder-mutedAlt bg-panelAlt border border-line rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                   placeholder="••••••••"
                 />
               </div>
@@ -145,7 +145,7 @@ const SignUpPage = () => {
 
             <button
               type="submit"
-              className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out border border-transparent rounded-md shadow-sm bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              className="flex justify-center w-full px-4 py-2 text-sm font-medium text-ink transition duration-150 ease-in-out border border-transparent rounded-md shadow-sm bg-accent hover:bg-accentHover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50"
               disabled={loading}
             >
               {loading ? (
@@ -165,11 +165,11 @@ const SignUpPage = () => {
             </button>
           </form>
 
-          <p className="mt-8 text-sm text-center text-gray-400">
+          <p className="mt-8 text-sm text-center text-mutedAlt">
             Already have an account?{" "}
             <Link
               to="/login"
-              className="font-medium text-blue-400 hover:text-blue-300"
+              className="font-medium text-accent hover:text-accentSoft"
             >
               Login here <ArrowRight className="inline w-4 h-4" />
             </Link>

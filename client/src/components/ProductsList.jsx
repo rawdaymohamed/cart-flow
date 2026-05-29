@@ -9,51 +9,51 @@ const ProductsList = () => {
 
 	return (
 		<motion.div
-			className='bg-slate-800 shadow-lg rounded-lg overflow-hidden max-w-4xl mx-auto border border-slate-700'
+			className='bg-panel shadow-lg rounded-lg overflow-hidden max-w-4xl mx-auto border border-line'
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.8 }}
 		>
-			<table className=' min-w-full divide-y divide-slate-700'>
-				<thead className='bg-slate-700'>
+			<table className=' min-w-full divide-y divide-line'>
+				<thead className='bg-panelAlt'>
 					<tr>
 						<th
 							scope='col'
-							className='px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'
+							className='px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider'
 						>
 							Product
 						</th>
 						<th
 							scope='col'
-							className='px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'
+							className='px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider'
 						>
 							Price
 						</th>
 						<th
 							scope='col'
-							className='px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'
+							className='px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider'
 						>
 							Category
 						</th>
 
 						<th
 							scope='col'
-							className='px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'
+							className='px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider'
 						>
 							Featured
 						</th>
 						<th
 							scope='col'
-							className='px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'
+							className='px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider'
 						>
 							Actions
 						</th>
 					</tr>
 				</thead>
 
-				<tbody className='bg-slate-800 divide-y divide-slate-700'>
+				<tbody className='bg-panel divide-y divide-line'>
 					{products?.map((product) => (
-						<tr key={product._id} className='hover:bg-slate-750'>
+						<tr key={product._id} className='hover:bg-panelAlt'>
 							<td className='px-6 py-4 whitespace-nowrap'>
 								<div className='flex items-center'>
 									<div className='flex-shrink-0 h-10 w-10'>
@@ -69,17 +69,17 @@ const ProductsList = () => {
 								</div>
 							</td>
 							<td className='px-6 py-4 whitespace-nowrap'>
-								<div className='text-sm text-gray-300'>${product.price.toFixed(2)}</div>
+								<div className='text-sm text-muted'>${product.price.toFixed(2)}</div>
 							</td>
 							<td className='px-6 py-4 whitespace-nowrap'>
-								<div className='text-sm text-gray-300'>{product.category}</div>
+								<div className='text-sm text-muted'>{product.category}</div>
 							</td>
 							<td className='px-6 py-4 whitespace-nowrap'>
 								<button
 									onClick={() => toggleFeaturedProduct(product._id)}
 									className={`p-1 rounded-full ${
-										product.isFeatured ? "bg-yellow-400 text-slate-900" : "bg-slate-600 text-gray-300"
-									} hover:bg-yellow-500 transition-colors duration-200`}
+										product.isFeatured ? "bg-accent text-ink" : "bg-panelAlt text-muted"
+									} hover:bg-accentHover transition-colors duration-200`}
 								>
 									<Star className='h-5 w-5' />
 								</button>
