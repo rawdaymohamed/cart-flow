@@ -76,12 +76,15 @@ export const useUserStore = create((set, get) => ({
 
 // Axios interceptor for token refresh
 let refreshPromise = null;
+const AUTH_ENDPOINTS = ["/auth/login", "/auth/signup", "/auth/logout", "/auth/refresh-token"];
+
+const isAuthEndpoint = (url = "") => AUTH_ENDPOINTS.some((endpoint) => url.includes(endpoint));
 
 axios.interceptors.response.use(
 	(response) => response,
 	async (error) => {
 		const originalRequest = error.config;
-		if (error.response?.status === 401 && !originalRequest._retry) {
+		if (error.response?.status === 401 && originalRequest && !originalRequest._retry && !isAuthEndpoint(originalRequest.url)) {
 			originalRequest._retry = true;
 
 			try {
@@ -94,13 +97,14 @@ axios.interceptors.response.use(
 				// Start a new refresh process
 				refreshPromise = useUserStore.getState().refreshToken();
 				await refreshPromise;
-				refreshPromise = null;
 
 				return axios(originalRequest);
 			} catch (refreshError) {
 				// If refresh fails, redirect to login or handle as needed
 				useUserStore.getState().logout();
 				return Promise.reject(refreshError);
+			} finally {
+				refreshPromise = null;
 			}
 		}
 		return Promise.reject(error);
