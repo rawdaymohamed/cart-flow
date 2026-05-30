@@ -7,6 +7,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 	const [itemsPerPage, setItemsPerPage] = useState(4);
 
 	const { addToCart } = useCartStore();
+	const safeFeaturedProducts = Array.isArray(featuredProducts) ? featuredProducts : [];
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -30,7 +31,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 	};
 
 	const isStartDisabled = currentIndex === 0;
-	const isEndDisabled = currentIndex >= featuredProducts.length - itemsPerPage;
+	const isEndDisabled = currentIndex >= safeFeaturedProducts.length - itemsPerPage;
 
 	return (
 		<div className='py-12'>
@@ -42,7 +43,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 							className='flex transition-transform duration-300 ease-in-out'
 							style={{ transform: `translateX(-${currentIndex * (100 / itemsPerPage)}%)` }}
 						>
-							{featuredProducts?.map((product) => (
+							{safeFeaturedProducts.map((product) => (
 								<div key={product._id} className='w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 flex-shrink-0 px-2'>
 									<div className='bg-surface/90 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden h-full transition-all duration-300 hover:shadow-xl border border-accent/25'>
 										<div className='overflow-hidden'>
