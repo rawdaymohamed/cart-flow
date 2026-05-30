@@ -10,11 +10,12 @@ import couponRoutes from "./routes/coupon.route.js";
 import paymentRoutes from "./routes/payment.route.js";
 import analyticsRoutes from "./routes/analytics.route.js";
 import categoryRoutes from "./routes/category.route.js";
-
+import cors from "cors";
 import { connectDB } from "./lib/db.js";
 
 dotenv.config();
 
+connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
@@ -27,32 +28,13 @@ const __dirname = path.resolve();
 app.use(express.json({ limit: "10mb" })); // allows you to parse the body of the request
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-
-  if (!origin) {
-    return next();
-  }
-
-  if (!allowedOrigins.includes(origin)) {
-    return res.status(403).json({ message: "Not allowed by CORS" });
-  }
-
-  res.setHeader("Access-Control-Allow-Origin", origin);
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-  );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader("Vary", "Origin");
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(204);
-  }
-
-  next();
-});
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Add this
+  }),
+);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
@@ -72,6 +54,5 @@ app.use("/api/categories", categoryRoutes);
 
 app.listen(PORT, () => {
   console.log("Server is running on http://localhost:" + PORT);
-  connectDB();
 });
 export default app;
