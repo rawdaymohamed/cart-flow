@@ -1,35 +1,73 @@
-<h1 align="center">CartFlow - E-commerce MERN stack web app🛒</h1>
+# CartFlow
+
+CartFlow is a full-stack e-commerce application built with the MERN stack. It includes product browsing, category navigation, cart flow, Stripe checkout, authentication, and an admin dashboard for managing the store.
 
 ## Features
 
-- 🚀 Project Setup
-- 🗄️ MongoDB & Redis Integration
-- 💳 Stripe Payment Setup
-- 🔐 Robust Authentication System
-- 🔑 JWT with Refresh/Access Tokens
-- 📝 User Signup & Login
-- 🛒 E-Commerce Core
-- 📦 Product & Category Management
-- 🛍️ Shopping Cart Functionality
-- 💰 Checkout with Stripe
-- 🏷️ Coupon Code System
-- 👑 Admin Dashboard
-- 📊 Sales Analytics
-- 🎨 Design with Tailwind
-- 🛒 Cart & Checkout Process
-- 🔒 Security
-- 🛡️ Data Protection
-- 🚀Caching with Redis
-- ⌛ And a lot more...
-- create category
-- delete category
+- User authentication with signup, login, and secure session handling
+- Product browsing with category-based filtering
+- Shopping cart with coupon support
+- Stripe-powered checkout flow
+- Admin dashboard for store management
+- Category and product management
+- Analytics and sales overview
+- Redis integration for caching and performance
+- Cloudinary support for image uploads
 
-## TODO
+## Demo
 
-- Users can add reviews for projects they bought
-- Admin can delete a review
+### Home
 
-### Setup .env file
+![Home page](demo/home.png)
+
+### Categories
+
+![Categories page](demo/categories.png)
+
+### Cart
+
+![Cart page](demo/cart.png)
+
+### Stripe Checkout
+
+![Stripe checkout](demo/stripe.png)
+
+### Login
+
+![Login page](demo/login.png)
+
+### Register
+
+![Register page](demo/register.png)
+
+### Admin Dashboard
+
+![Admin dashboard](demo/admin-dashboard.png)
+
+### Categories Dashboard
+
+![Categories dashboard](demo/categories-dashboard.png)
+
+## Tech Stack
+
+- Frontend: React, Vite, Tailwind CSS, Zustand, React Router
+- Backend: Node.js, Express, MongoDB, Mongoose
+- Payments: Stripe
+- Storage: Cloudinary
+- Cache: Redis
+
+## Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/rawdaymohamed/cart-flow
+cd cart-flow
+```
+
+### 2. Configure the backend
+
+Create a `.env` file in the `server` directory:
 
 ```bash
 PORT=5000
@@ -49,14 +87,34 @@ CLIENT_URL=http://localhost:5173
 NODE_ENV=development
 ```
 
-### Run this app locally
+### 3. Install dependencies
 
-```shell
-npm run build
+```bash
+cd server
+npm install
+
+cd ../client
+npm install
 ```
 
-### Start the app
+### 4. Run the app
 
-```shell
-npm run start
+Open two terminals:
+
+```bash
+# Terminal 1
+cd server
+npm run dev
 ```
+
+```bash
+# Terminal 2
+cd client
+npm run dev
+```
+
+## Notes
+
+- The frontend runs on Vite’s default port, usually `http://localhost:5173`
+- The backend runs on the port defined in `PORT`
+- Make sure the backend environment variables are configured before testing authentication, checkout, or admin features
