@@ -13,8 +13,12 @@ const CategoryPage = () => {
     fetchProductsByCategory(category);
   }, [fetchProductsByCategory, category]);
 
-  console.log("products:", products);
-  if (loading) return <LoadingSpinner />;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center py-20">
+        <LoadingSpinner />
+      </div>
+    );
   return (
     <div className="min-h-screen">
       <div className="relative z-10 max-w-screen-xl px-4 py-16 mx-auto sm:px-6 lg:px-8">
