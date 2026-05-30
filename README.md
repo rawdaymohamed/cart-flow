@@ -6,7 +6,7 @@ CartFlow is a full-stack e-commerce application built with the MERN stack. It in
 
 - User authentication with signup, login, and secure session handling
 - Product browsing with category-based filtering
-- Shopping cart with coupon support
+- Shopping cart
 - Stripe-powered checkout flow
 - Admin dashboard for store management
 - Category and product management
