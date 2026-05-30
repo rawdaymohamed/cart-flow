@@ -16,9 +16,9 @@ CartFlow is a full-stack e-commerce application built with the MERN stack. It in
 
 ## Demo
 
-### Home
+### CartFlow
 
-![Home page](demo/home.png)
+![Home page](demo/cart-flow.png)
 
 ### Categories
 
