@@ -144,7 +144,9 @@ export const refreshToken = async (req, res) => {
     res.json({ message: "Token refreshed successfully" });
   } catch (error) {
     console.log("Error in refreshToken controller", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
+    return res.status(401).json({
+      message: "Invalid refresh token",
+    });
   }
 };
 
