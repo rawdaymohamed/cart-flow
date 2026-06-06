@@ -40,13 +40,13 @@ describe("POST /api/auth/login", () => {
     );
   });
 
-  it("rejects login when email does not exist", async () => {
+  it("rejects login incorrect credentials", async () => {
     const res = await request(app).post("/api/auth/login").send({
       email: "doesnotexist@test.com",
       password: "password123",
     });
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(401);
 
     expect(res.body).toEqual(
       expect.objectContaining({
@@ -66,7 +66,7 @@ describe("POST /api/auth/login", () => {
       password: "wrongpassword",
     });
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(401);
 
     expect(res.body).toEqual(
       expect.objectContaining({
@@ -121,7 +121,7 @@ describe("POST /api/auth/login", () => {
       password: "password123",
     });
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(401);
     expect(res.headers["set-cookie"]).toBeUndefined();
   });
 });
