@@ -2,7 +2,6 @@ import request from "supertest";
 import { describe, it, expect } from "vitest";
 import app from "../../app.js";
 import User from "../../models/user.model.js";
-import { email } from "zod";
 
 describe("POST /api/auth/signup", () => {
   it("creates a new user and sets auth cookies", async () => {
@@ -143,5 +142,14 @@ describe("POST /api/auth/signup", () => {
         message: "Password must be at least 8 characters",
       }),
     );
+  });
+  it("rejects signup when fields are empty strings", async () => {
+    const res = await request(app).post("/api/auth/signup").send({
+      name: "",
+      email: "",
+      password: "",
+    });
+
+    expect(res.status).toBe(400);
   });
 });
