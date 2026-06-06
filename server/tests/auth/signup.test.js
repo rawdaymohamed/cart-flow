@@ -2,6 +2,7 @@ import request from "supertest";
 import { describe, it, expect } from "vitest";
 import app from "../../app.js";
 import User from "../../models/user.model.js";
+import { email } from "zod";
 
 describe("POST /api/auth/signup", () => {
   it("creates a new user and sets auth cookies", async () => {
@@ -90,11 +91,57 @@ describe("POST /api/auth/signup", () => {
       true,
     );
   });
-  it("rejects signup when required fields are missing", async () => {
+  it("rejects signup when name is missing", async () => {
     const res = await request(app).post("/api/auth/signup").send({});
+
     expect(res.status).toBe(400);
+    expect(res.body.message).toBe("Name is required");
+  });
+  it("rejects signup when email is missing", async () => {
+    const res = await request(app)
+      .post("/api/auth/signup")
+      .send({ name: "Rawda" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe("Email is required");
+  });
+  it("rejects signup when password are missing", async () => {
+    const res = await request(app)
+      .post("/api/auth/signup")
+      .send({ name: "Rawda", email: "rawda1@test.com" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe("Password is required");
+  });
+
+  it("rejects invalid email format", async () => {
+    const res = await request(app).post("/api/auth/signup").send({
+      name: "Rawda",
+      email: "not-an-email",
+      password: "password123",
+    });
+
+    expect(res.status).toBe(400);
+
     expect(res.body).toEqual(
-      expect.objectContaining({ message: "Please enter all fields" }),
+      expect.objectContaining({
+        message: "Please provide a valid email",
+      }),
+    );
+  });
+  it("rejects short password", async () => {
+    const res = await request(app).post("/api/auth/signup").send({
+      name: "Rawda",
+      email: "rawda1@test.com",
+      password: "123",
+    });
+
+    expect(res.status).toBe(400);
+
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Password must be at least 8 characters",
+      }),
     );
   });
 });

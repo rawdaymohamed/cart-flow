@@ -41,8 +41,7 @@ const setCookies = (res, accessToken, refreshToken) => {
 export const signup = async (req, res) => {
   try {
     const { email, password, name } = req.body;
-    if (!email || !password || !name)
-      return res.status(400).json({ message: "Please enter all fields" });
+
     const userExists = await User.findOne({ email });
 
     if (userExists) {
