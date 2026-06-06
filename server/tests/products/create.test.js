@@ -44,13 +44,17 @@ async function loginAs({ name, email, password, role = "customer" }) {
 }
 
 describe("POST /api/products", () => {
+  const validProductPayload = {
+    name: "Phone",
+    description: "Smartphone with 128GB storage",
+    price: 799,
+    image: "data:image/png;base64,abc123",
+    category: "Electronics",
+  };
+
   it("rejects requests without authentication", async () => {
     const res = await request(app).post("/api/products").send({
-      name: "Phone",
-      description: "Smartphone with 128GB storage",
-      price: 799,
-      image: "data:image/png;base64,abc123",
-      category: "Electronics",
+      ...validProductPayload,
     });
 
     expect(res.status).toBe(401);
@@ -72,11 +76,7 @@ describe("POST /api/products", () => {
       .post("/api/products")
       .set("Cookie", cookies)
       .send({
-        name: "Phone",
-        description: "Smartphone with 128GB storage",
-        price: 799,
-        image: "data:image/png;base64,abc123",
-        category: "Electronics",
+        ...validProductPayload,
       });
 
     expect(res.status).toBe(403);
@@ -99,48 +99,118 @@ describe("POST /api/products", () => {
       secure_url: "https://res.cloudinary.com/demo/image/upload/v1/products/phone.jpg",
     });
 
-    const productPayload = {
-      name: "Phone",
-      description: "Smartphone with 128GB storage",
-      price: 799,
-      image: "data:image/png;base64,abc123",
-      category: "Electronics",
-    };
-
     const res = await request(app)
       .post("/api/products")
       .set("Cookie", adminCookies)
-      .send(productPayload);
+      .send(validProductPayload);
 
     expect(res.status).toBe(201);
     expect(res.body).toEqual(
       expect.objectContaining({
-        name: productPayload.name,
-        description: productPayload.description,
-        price: productPayload.price,
+        name: validProductPayload.name,
+        description: validProductPayload.description,
+        price: validProductPayload.price,
         image: "https://res.cloudinary.com/demo/image/upload/v1/products/phone.jpg",
-        category: productPayload.category,
+        category: validProductPayload.category,
         isFeatured: false,
       }),
     );
 
     expect(cloudinaryUploadMock).toHaveBeenCalledTimes(1);
-    expect(cloudinaryUploadMock).toHaveBeenCalledWith(productPayload.image, {
+    expect(cloudinaryUploadMock).toHaveBeenCalledWith(validProductPayload.image, {
       folder: "products",
     });
 
-    const savedProduct = await Product.findOne({ name: productPayload.name });
+    const savedProduct = await Product.findOne({ name: validProductPayload.name });
 
     expect(savedProduct).toBeTruthy();
     expect(savedProduct.toObject()).toEqual(
       expect.objectContaining({
-        name: productPayload.name,
-        description: productPayload.description,
-        price: productPayload.price,
+        name: validProductPayload.name,
+        description: validProductPayload.description,
+        price: validProductPayload.price,
         image: "https://res.cloudinary.com/demo/image/upload/v1/products/phone.jpg",
-        category: productPayload.category,
+        category: validProductPayload.category,
         isFeatured: false,
       }),
     );
+  });
+
+  it("rejects product creation when name is missing", async () => {
+    const adminCookies = await loginAs({
+      name: "Admin",
+      email: "admin-missing-name@example.com",
+      password: "password123",
+      role: "admin",
+    });
+
+    const res = await request(app)
+      .post("/api/products")
+      .set("Cookie", adminCookies)
+      .send({
+        description: validProductPayload.description,
+        price: validProductPayload.price,
+        image: validProductPayload.image,
+        category: validProductPayload.category,
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/name/i);
+    expect(cloudinaryUploadMock).not.toHaveBeenCalled();
+
+    const products = await Product.find({});
+    expect(products).toHaveLength(0);
+  });
+
+  it("rejects product creation when price is missing", async () => {
+    const adminCookies = await loginAs({
+      name: "Admin",
+      email: "admin-missing-price@example.com",
+      password: "password123",
+      role: "admin",
+    });
+
+    const res = await request(app)
+      .post("/api/products")
+      .set("Cookie", adminCookies)
+      .send({
+        name: validProductPayload.name,
+        description: validProductPayload.description,
+        image: validProductPayload.image,
+        category: validProductPayload.category,
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/price/i);
+    expect(cloudinaryUploadMock).not.toHaveBeenCalled();
+
+    const products = await Product.find({});
+    expect(products).toHaveLength(0);
+  });
+
+  it("rejects product creation when category is missing", async () => {
+    const adminCookies = await loginAs({
+      name: "Admin",
+      email: "admin-missing-category@example.com",
+      password: "password123",
+      role: "admin",
+    });
+
+    const res = await request(app)
+      .post("/api/products")
+      .set("Cookie", adminCookies)
+      .send({
+        name: validProductPayload.name,
+        description: validProductPayload.description,
+        price: validProductPayload.price,
+        image: validProductPayload.image,
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/category/i);
+    expect(cloudinaryUploadMock).not.toHaveBeenCalled();
+
+    const products = await Product.find({});
+    expect(products).toHaveLength(0);
   });
 });
