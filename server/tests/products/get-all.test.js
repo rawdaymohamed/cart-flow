@@ -1,5 +1,5 @@
 import request from "supertest";
-import { describe, it, expect, vi } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 
 vi.mock("../../lib/redis.js", () => ({
   redis: {
@@ -28,6 +28,11 @@ async function loginAs({ name, email, password, role = "customer" }) {
 
   return res.headers["set-cookie"];
 }
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.clearAllMocks();
+});
 
 describe("GET /api/products", () => {
   it("rejects requests without authentication", async () => {
@@ -128,5 +133,28 @@ describe("GET /api/products", () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ products: [] });
+  });
+
+  it("returns 500 when loading products fails", async () => {
+    const adminCookies = await loginAs({
+      name: "Admin",
+      email: "admin-error@example.com",
+      password: "password123",
+      role: "admin",
+    });
+
+    vi.spyOn(Product, "find").mockRejectedValueOnce(new Error("database unavailable"));
+
+    const res = await request(app)
+      .get("/api/products")
+      .set("Cookie", adminCookies);
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Server error",
+        error: "database unavailable",
+      }),
+    );
   });
 });

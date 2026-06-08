@@ -136,6 +136,34 @@ describe("POST /api/products", () => {
     );
   });
 
+  it("rejects product creation when image is missing", async () => {
+    const adminCookies = await loginAs({
+      name: "Admin",
+      email: "admin-no-image@example.com",
+      password: "password123",
+      role: "admin",
+    });
+
+    const payloadWithoutImage = {
+      name: "Desk Lamp",
+      description: "Minimal desk lamp",
+      price: 45,
+      category: "Home",
+    };
+
+    const res = await request(app)
+      .post("/api/products")
+      .set("Cookie", adminCookies)
+      .send(payloadWithoutImage);
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/image/i);
+    expect(cloudinaryUploadMock).not.toHaveBeenCalled();
+
+    const savedProduct = await Product.findOne({ name: payloadWithoutImage.name });
+    expect(savedProduct).toBeNull();
+  });
+
   it("returns 500 when cloudinary does not return a secure_url", async () => {
     const adminCookies = await loginAs({
       name: "Admin",

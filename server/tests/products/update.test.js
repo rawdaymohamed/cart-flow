@@ -218,8 +218,46 @@ describe("PUT /api/products/:id", () => {
     expect(res.status).toBe(404);
     expect(res.body).toEqual(
       expect.objectContaining({
-        message: "Product not found",
+      message: "Product not found",
       }),
     );
+  });
+
+  it("returns 500 when updating the product fails", async () => {
+    const adminCookies = await loginAs({
+      name: "Admin",
+      email: "admin-update-error@example.com",
+      password: "password123",
+      role: "admin",
+    });
+
+    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const product = await Product.create(existingProduct);
+
+    const updateSpy = vi
+      .spyOn(Product, "findByIdAndUpdate")
+      .mockRejectedValueOnce(new Error("database unavailable"));
+
+    const res = await request(app)
+      .put(`/api/products/${product._id}`)
+      .set("Cookie", adminCookies)
+      .send({
+        name: "Updated Phone",
+      });
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Server error",
+        error: "database unavailable",
+      }),
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Error in updateProduct controller",
+      "database unavailable",
+    );
+
+    updateSpy.mockRestore();
+    consoleSpy.mockRestore();
   });
 });

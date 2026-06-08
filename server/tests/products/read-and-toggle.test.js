@@ -107,6 +107,56 @@ describe("GET /api/products/featured", () => {
       expect.stringContaining("Featured Phone"),
     );
   });
+
+  it("returns 404 when no featured products are found", async () => {
+    redisGetMock.mockResolvedValueOnce(null);
+
+    const leanMock = vi.fn().mockResolvedValueOnce(null);
+    const findSpy = vi.spyOn(Product, "find").mockReturnValue({
+      lean: leanMock,
+    });
+
+    const res = await request(app).get("/api/products/featured");
+
+    expect(res.status).toBe(404);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "No featured products found",
+      }),
+    );
+    expect(redisSetMock).not.toHaveBeenCalled();
+    expect(findSpy).toHaveBeenCalledWith({ isFeatured: true });
+    expect(leanMock).toHaveBeenCalledTimes(1);
+
+    findSpy.mockRestore();
+  });
+
+  it("returns 500 when loading featured products fails", async () => {
+    redisGetMock.mockResolvedValueOnce(null);
+
+    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const leanMock = vi.fn().mockRejectedValueOnce(new Error("database unavailable"));
+    const findSpy = vi.spyOn(Product, "find").mockReturnValue({
+      lean: leanMock,
+    });
+
+    const res = await request(app).get("/api/products/featured");
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Server error",
+        error: "database unavailable",
+      }),
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Error in getFeaturedProducts controller",
+      "database unavailable",
+    );
+
+    findSpy.mockRestore();
+    consoleSpy.mockRestore();
+  });
 });
 
 describe("GET /api/products/category/:category", () => {
@@ -138,6 +188,30 @@ describe("GET /api/products/category/:category", () => {
         category: "Electronics",
       }),
     );
+  });
+
+  it("returns 500 when loading products by category fails", async () => {
+    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const findSpy = vi
+      .spyOn(Product, "find")
+      .mockRejectedValueOnce(new Error("database unavailable"));
+
+    const res = await request(app).get("/api/products/category/Electronics");
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Server error",
+        error: "database unavailable",
+      }),
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Error in getProductsByCategory controller",
+      "database unavailable",
+    );
+
+    findSpy.mockRestore();
+    consoleSpy.mockRestore();
   });
 });
 
@@ -194,6 +268,30 @@ describe("GET /api/products/recommendations", () => {
         price: expect.any(Number),
       }),
     );
+  });
+
+  it("returns 500 when recommendations cannot be loaded", async () => {
+    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const aggregateSpy = vi
+      .spyOn(Product, "aggregate")
+      .mockRejectedValueOnce(new Error("database unavailable"));
+
+    const res = await request(app).get("/api/products/recommendations");
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Server error",
+        error: "database unavailable",
+      }),
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Error in getRecommendedProducts controller",
+      "database unavailable",
+    );
+
+    aggregateSpy.mockRestore();
+    consoleSpy.mockRestore();
   });
 });
 
@@ -273,6 +371,42 @@ describe("PATCH /api/products/:id", () => {
         message: "Product not found",
       }),
     );
+  });
+
+  it("returns 500 when toggling featured state fails", async () => {
+    const adminCookies = await loginAs({
+      name: "Admin",
+      email: "admin-toggle-error@example.com",
+      password: "password123",
+      role: "admin",
+    });
+
+    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const findByIdSpy = vi
+      .spyOn(Product, "findById")
+      .mockRejectedValueOnce(new Error("database unavailable"));
+
+    const product = await Product.create(existingProduct);
+
+    const res = await request(app)
+      .patch(`/api/products/${product._id}`)
+      .set("Cookie", adminCookies)
+      .send();
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Server error",
+        error: "database unavailable",
+      }),
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Error in toggleFeaturedProduct controller",
+      "database unavailable",
+    );
+
+    findByIdSpy.mockRestore();
+    consoleSpy.mockRestore();
   });
 
   it("still succeeds when refreshing the featured cache fails", async () => {

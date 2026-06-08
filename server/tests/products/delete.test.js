@@ -181,4 +181,71 @@ describe("DELETE /api/products/:id", () => {
     const deletedProduct = await Product.findById(insertedId);
     expect(deletedProduct).toBeNull();
   });
+
+  it("returns 500 when deleting the product fails", async () => {
+    const adminCookies = await loginAs({
+      name: "Admin",
+      email: "admin-delete-error@example.com",
+      password: "password123",
+      role: "admin",
+    });
+
+    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const product = await Product.create(existingProduct);
+
+    vi.spyOn(Product, "findByIdAndDelete").mockRejectedValueOnce(
+      new Error("database unavailable"),
+    );
+
+    const res = await request(app)
+      .delete(`/api/products/${product._id}`)
+      .set("Cookie", adminCookies)
+      .send();
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Server error",
+        error: "database unavailable",
+      }),
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Error in deleteProduct controller",
+      "database unavailable",
+    );
+
+    consoleSpy.mockRestore();
+  });
+
+  it("continues deleting when cloudinary destroy fails", async () => {
+    const adminCookies = await loginAs({
+      name: "Admin",
+      email: "admin-delete-cloudinary-error@example.com",
+      password: "password123",
+      role: "admin",
+    });
+
+    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    cloudinaryDestroyMock.mockRejectedValueOnce(new Error("cloudinary unavailable"));
+    const product = await Product.create(existingProduct);
+
+    const res = await request(app)
+      .delete(`/api/products/${product._id}`)
+      .set("Cookie", adminCookies)
+      .send();
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Product deleted successfully",
+      }),
+    );
+    expect(cloudinaryDestroyMock).toHaveBeenCalledWith("products/phone-old");
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "error deleting image from cloduinary",
+      expect.any(Error),
+    );
+
+    consoleSpy.mockRestore();
+  });
 });
