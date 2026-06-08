@@ -68,6 +68,38 @@ export const createProduct = async (req, res) => {
   }
 };
 
+export const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    const updateData = { ...req.body };
+
+    if (updateData.image) {
+      const cloudinaryResponse = await cloudinary.uploader.upload(updateData.image, {
+        folder: "products",
+      });
+
+      updateData.image = cloudinaryResponse?.secure_url || "";
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    await updateFeaturedProductsCache();
+    res.json(updatedProduct);
+  } catch (error) {
+    console.log("Error in updateProduct controller", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 export const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
