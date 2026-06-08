@@ -136,6 +136,32 @@ describe("POST /api/products", () => {
     );
   });
 
+  it("returns 500 when cloudinary does not return a secure_url", async () => {
+    const adminCookies = await loginAs({
+      name: "Admin",
+      email: "admin-no-secure-url@example.com",
+      password: "password123",
+      role: "admin",
+    });
+
+    cloudinaryUploadMock.mockResolvedValue({});
+
+    const res = await request(app)
+      .post("/api/products")
+      .set("Cookie", adminCookies)
+      .send(validProductPayload);
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Server error",
+      }),
+    );
+
+    const savedProduct = await Product.findOne({ name: validProductPayload.name });
+    expect(savedProduct).toBeNull();
+  });
+
   it("rejects product creation when name is missing", async () => {
     const adminCookies = await loginAs({
       name: "Admin",

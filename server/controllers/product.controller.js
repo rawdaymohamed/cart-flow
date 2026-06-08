@@ -80,9 +80,12 @@ export const updateProduct = async (req, res) => {
     const updateData = { ...req.body };
 
     if (updateData.image) {
-      const cloudinaryResponse = await cloudinary.uploader.upload(updateData.image, {
-        folder: "products",
-      });
+      const cloudinaryResponse = await cloudinary.uploader.upload(
+        updateData.image,
+        {
+          folder: "products",
+        },
+      );
 
       updateData.image = cloudinaryResponse?.secure_url || "";
     }
