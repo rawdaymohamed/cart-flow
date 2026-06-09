@@ -158,4 +158,24 @@ describe("POST /api/cart", () => {
 
     consoleSpy.mockRestore();
   });
+
+  it("rejects malformed product ids", async () => {
+    const cookies = await loginAs({
+      name: "Invalid Product Customer",
+      email: "invalid.product@example.com",
+      password: "password123",
+    });
+
+    const res = await request(app)
+      .post("/api/cart")
+      .set("Cookie", cookies)
+      .send({ productId: "not-a-valid-objectid" });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Invalid product ID",
+      }),
+    );
+  });
 });

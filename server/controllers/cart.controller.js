@@ -1,9 +1,12 @@
+import mongoose from "mongoose";
 import Product from "../models/product.model.js";
 
 export const getCartProducts = async (req, res) => {
   try {
     const cartItems = req.user.cartItems ?? [];
-    const productIds = cartItems.map((item) => item.product);
+    const productIds = cartItems
+      .map((item) => item.product)
+      .filter((productId) => mongoose.Types.ObjectId.isValid(productId));
     const products = await Product.find({ _id: { $in: productIds } });
 
     // Keep the cart order and attach the saved quantity to each product.
@@ -13,7 +16,13 @@ export const getCartProducts = async (req, res) => {
 
     const items = cartItems
       .map((item) => {
-        const product = productsById.get(item.product.toString());
+        const productId = item.product?.toString?.();
+
+        if (!productId) {
+          return null;
+        }
+
+        const product = productsById.get(productId);
 
         if (!product) {
           return null;
@@ -34,6 +43,10 @@ export const addToCart = async (req, res) => {
   try {
     const { productId } = req.body;
     const user = req.user;
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ message: "Invalid product ID" });
+    }
 
     const existingItem = user.cartItems.find(
       (item) => item.product?.toString() === productId,

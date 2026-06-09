@@ -140,6 +140,47 @@ describe("GET /api/cart", () => {
     );
   });
 
+  it("ignores malformed product ids in cart items instead of failing", async () => {
+    const product = await Product.create({
+      name: "Speaker",
+      description: "Bluetooth speaker",
+      price: 90,
+      image: "https://example.com/speaker.jpg",
+      category: "Electronics",
+    });
+
+    const cookies = await loginAs({
+      name: "Malformed Cart Customer",
+      email: "malformed.cart@example.com",
+      password: "password123",
+    });
+
+    const user = await User.findOne({ email: "malformed.cart@example.com" });
+    await User.collection.updateOne(
+      { _id: user._id },
+      {
+        $set: {
+          cartItems: [
+            { product: "not-a-valid-objectid", quantity: 7 },
+            { product: product._id, quantity: 2 },
+          ],
+        },
+      },
+    );
+
+    const res = await request(app).get("/api/cart").set("Cookie", cookies);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0]).toEqual(
+      expect.objectContaining({
+        _id: product._id.toString(),
+        name: "Speaker",
+        quantity: 2,
+      }),
+    );
+  });
+
   it("returns 500 when loading cart products fails", async () => {
     const product = await Product.create({
       name: "Monitor",
