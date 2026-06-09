@@ -1,4 +1,5 @@
 import request from "supertest";
+import mongoose from "mongoose";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import app from "../../app.js";
@@ -100,6 +101,43 @@ describe("GET /api/cart", () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual([]);
+  });
+
+  it("filters out cart items whose products no longer exist", async () => {
+    const product = await Product.create({
+      name: "Tablet",
+      description: "Portable tablet",
+      price: 600,
+      image: "https://example.com/tablet.jpg",
+      category: "Electronics",
+    });
+
+    const missingProductId = new mongoose.Types.ObjectId();
+
+    const cookies = await loginAs({
+      name: "Stale Cart Customer",
+      email: "stale.cart@example.com",
+      password: "password123",
+    });
+
+    const user = await User.findOne({ email: "stale.cart@example.com" });
+    user.cartItems = [
+      { product: missingProductId, quantity: 4 },
+      { product: product._id, quantity: 2 },
+    ];
+    await user.save();
+
+    const res = await request(app).get("/api/cart").set("Cookie", cookies);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0]).toEqual(
+      expect.objectContaining({
+        _id: product._id.toString(),
+        name: "Tablet",
+        quantity: 2,
+      }),
+    );
   });
 
   it("returns 500 when loading cart products fails", async () => {
