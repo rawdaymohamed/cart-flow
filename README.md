@@ -113,6 +113,25 @@ cd client
 npm run dev
 ```
 
+## Test Automation (Server)
+
+The server API includes a fully automated integration test suite built with Vitest and Supertest. The suite tests routes, controllers, error handling, and database integrity in absolute isolation.
+
+### Running Backend Tests
+
+Test Automation (Server)
+
+```
+# Run all server tests once
+npm run test
+
+# Run tests in continuous watch mode (highly recommended during active development)
+npm run test:watch
+
+# Run tests and generate an interactive code coverage overview report
+npm run test:coverage
+```
+
 ## Notes
 
 - The frontend runs on Vite’s default port, usually `http://localhost:5173`
