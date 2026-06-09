@@ -16,6 +16,18 @@ export const createCheckoutSession = async (req, res) => {
 
     // ... (Keep the exact same validation loop from before) ...
     for (const item of products) {
+      if (typeof item.quantity !== "number" || Number.isNaN(item.quantity)) {
+        return res.status(400).json({
+          error: "Quantity must be a number",
+        });
+      }
+
+      if (item.quantity <= 0) {
+        return res.status(400).json({
+          error: "Quantity must be greater than 0",
+        });
+      }
+
       const dbProduct = await Product.findById(item._id);
       if (!dbProduct) {
         return res.status(404).json({
