@@ -135,7 +135,13 @@ export const checkoutSuccess = async (req, res) => {
           "Payment successful, order created, and coupon deactivated if used.",
         orderId: newOrder._id,
       });
+      return;
     }
+
+    return res.status(400).json({
+      success: false,
+      message: "Payment has not been completed.",
+    });
   } catch (error) {
     console.error("Error processing successful checkout:", error);
     res.status(500).json({
