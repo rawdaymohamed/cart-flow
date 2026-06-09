@@ -11,7 +11,6 @@ import paymentRoutes from "./routes/payment.route.js";
 import analyticsRoutes from "./routes/analytics.route.js";
 import categoryRoutes from "./routes/category.route.js";
 import cors from "cors";
-import { connectDB } from "./lib/db.js";
 
 dotenv.config();
 
