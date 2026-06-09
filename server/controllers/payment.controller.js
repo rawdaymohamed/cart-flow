@@ -13,12 +13,18 @@ export const createCheckoutSession = async (req, res) => {
 
     let totalAmount = 0;
     const lineItems = [];
-
+    const metadataProducts = [];
     // ... (Keep the exact same validation loop from before) ...
     for (const item of products) {
       if (typeof item.quantity !== "number" || Number.isNaN(item.quantity)) {
         return res.status(400).json({
           error: "Quantity must be a number",
+        });
+      }
+
+      if (!Number.isInteger(item.quantity)) {
+        return res.status(400).json({
+          error: "Quantity must be a whole number",
         });
       }
 
@@ -35,6 +41,11 @@ export const createCheckoutSession = async (req, res) => {
           deletedProductId: item._id,
         });
       }
+      metadataProducts.push({
+        id: dbProduct._id.toString(),
+        quantity: item.quantity,
+        price: dbProduct.price,
+      });
       totalAmount += dbProduct.price * item.quantity;
       lineItems.push({
         price_data: {
@@ -79,13 +90,7 @@ export const createCheckoutSession = async (req, res) => {
       metadata: {
         userId: req.user._id.toString(),
         couponCode: couponCode || "",
-        products: JSON.stringify(
-          products.map((p) => ({
-            id: p._id,
-            quantity: p.quantity,
-            price: p.price,
-          })),
-        ),
+        products: JSON.stringify(metadataProducts),
       },
     });
 
@@ -99,8 +104,28 @@ export const createCheckoutSession = async (req, res) => {
 export const checkoutSuccess = async (req, res) => {
   try {
     const { sessionId } = req.body;
+    if (!sessionId) {
+      return res.status(400).json({
+        message: "Session ID is required",
+      });
+    }
     const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const existingOrder = await Order.findOne({
+      stripeSessionId: sessionId,
+    });
 
+    if (existingOrder) {
+      return res.status(200).json({
+        success: true,
+        message: "Order already processed.",
+        orderId: existingOrder._id,
+      });
+    }
+    if (session.metadata.userId !== req.user._id.toString()) {
+      return res.status(403).json({
+        message: "You are not allowed to process this checkout session",
+      });
+    }
     if (session.payment_status === "paid") {
       if (session.metadata.couponCode) {
         await Coupon.findOneAndUpdate(
@@ -160,7 +185,7 @@ async function createStripeCoupon(discountPercentage) {
   return coupon.id;
 }
 
-async function createNewCoupon(userId) {
+export async function createNewCoupon(userId) {
   await Coupon.findOneAndDelete({ userId });
 
   const newCoupon = new Coupon({

@@ -42,11 +42,9 @@ async function loginAs({ name, email, password, role = "customer" }) {
 
 describe("POST /api/payments/checkout-success", () => {
   it("rejects requests without authentication", async () => {
-    const res = await request(app)
-      .post("/api/payments/checkout-success")
-      .send({
-        sessionId: "cs_test_unauth",
-      });
+    const res = await request(app).post("/api/payments/checkout-success").send({
+      sessionId: "cs_test_unauth",
+    });
 
     expect(res.status).toBe(401);
     expect(res.body).toEqual(
@@ -203,7 +201,9 @@ describe("POST /api/payments/checkout-success", () => {
         error: "Stripe down",
       }),
     );
-    expect(await Order.findOne({ stripeSessionId: "cs_test_error" })).toBeNull();
+    expect(
+      await Order.findOne({ stripeSessionId: "cs_test_error" }),
+    ).toBeNull();
   });
 
   it("returns 400 and does not create an order when the session is unpaid", async () => {
@@ -212,14 +212,16 @@ describe("POST /api/payments/checkout-success", () => {
       email: "checkout.success.unpaid@example.com",
       password: "password123",
     });
-
+    const user = await User.findOne({
+      email: "checkout.success.unpaid@example.com",
+    });
     const couponUpdateSpy = vi.spyOn(Coupon, "findOneAndUpdate");
 
     checkoutSessionsRetrieveMock.mockResolvedValue({
       payment_status: "unpaid",
       amount_total: 5000,
       metadata: {
-        userId: "507f1f77bcf86cd799439099",
+        userId: user._id.toString(),
         couponCode: "SAVE10",
         products: JSON.stringify([
           {
@@ -246,6 +248,60 @@ describe("POST /api/payments/checkout-success", () => {
       }),
     );
     expect(couponUpdateSpy).not.toHaveBeenCalled();
-    expect(await Order.findOne({ stripeSessionId: "cs_test_unpaid" })).toBeNull();
+    expect(
+      await Order.findOne({ stripeSessionId: "cs_test_unpaid" }),
+    ).toBeNull();
+  });
+  it("rejects checkout success when session belongs to another user", async () => {
+    const cookies = await loginAs({
+      name: "Attacker",
+      email: "attacker@example.com",
+      password: "password123",
+    });
+
+    checkoutSessionsRetrieveMock.mockResolvedValue({
+      payment_status: "paid",
+      amount_total: 12000,
+      metadata: {
+        userId: "507f1f77bcf86cd799439099",
+        couponCode: "",
+        products: JSON.stringify([
+          {
+            id: "507f1f77bcf86cd799439012",
+            quantity: 1,
+            price: 120,
+          },
+        ]),
+      },
+    });
+
+    const res = await request(app)
+      .post("/api/payments/checkout-success")
+      .set("Cookie", cookies)
+      .send({ sessionId: "cs_test_other_user" });
+
+    expect(res.status).toBe(403);
+    expect(res.body.message).toBe(
+      "You are not allowed to process this checkout session",
+    );
+
+    expect(
+      await Order.findOne({ stripeSessionId: "cs_test_other_user" }),
+    ).toBeNull();
+  });
+  it("rejects checkout success when sessionId is missing", async () => {
+    const cookies = await loginAs({
+      name: "Missing Session Customer",
+      email: "missing.session@example.com",
+      password: "password123",
+    });
+
+    const res = await request(app)
+      .post("/api/payments/checkout-success")
+      .set("Cookie", cookies)
+      .send({});
+
+    expect(res.status).toBe(400);
+    expect(checkoutSessionsRetrieveMock).not.toHaveBeenCalled();
   });
 });

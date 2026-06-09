@@ -333,7 +333,9 @@ describe("POST /api/payments/create-checkout-session", () => {
       category: "Accessories",
     });
 
-    const couponFindOneSpy = vi.spyOn(Coupon, "findOne").mockResolvedValue(null);
+    const couponFindOneSpy = vi
+      .spyOn(Coupon, "findOne")
+      .mockResolvedValue(null);
 
     checkoutSessionsCreateMock.mockResolvedValue({
       id: "cs_test_invalid_coupon",
