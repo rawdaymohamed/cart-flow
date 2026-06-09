@@ -1,91 +1,114 @@
-import Category from "../models/category.model.js";
+import mongoose from "mongoose";
 import cloudinary from "../lib/cloudinary.js";
+import Category from "../models/category.model.js";
 
 // Helper function to slugify text
 const slugify = (text) => {
-	return text
-		.toString()
-		.toLowerCase()
-		.trim()
-		.replace(/\s+/g, "-")
-		.replace(/[^\w\-]+/g, "")
-		.replace(/\-\-+/g, "-")
-		.replace(/^-+/, "")
-		.replace(/-+$/, "");
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
 };
 
 export const getAllCategories = async (req, res) => {
-	try {
-		const categories = await Category.find({}).sort({ createdAt: -1 });
-		res.json(categories);
-	} catch (error) {
-		console.log("Error in getAllCategories controller:", error.message);
-		res.status(500).json({ message: "Server error", error: error.message });
-	}
+  try {
+    const categories = await Category.find({}).sort({ createdAt: -1 });
+    res.json(categories);
+  } catch (error) {
+    console.log("Error in getAllCategories controller:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 };
 
 export const createCategory = async (req, res) => {
-	try {
-		const { name, image } = req.body;
+  try {
+    const { name, image } = req.body;
 
-		if (!name || !image) {
-			return res.status(400).json({ message: "Name and image are required" });
-		}
+    if (!name || !image) {
+      return res.status(400).json({ message: "Name and image are required" });
+    }
 
-		// Check if category already exists
-		const existingCategory = await Category.findOne({ name });
-		if (existingCategory) {
-			return res.status(400).json({ message: "Category with this name already exists" });
-		}
+    // Check if category already exists
+    const existingCategory = await Category.findOne({ name });
+    if (existingCategory) {
+      return res
+        .status(400)
+        .json({ message: "Category with this name already exists" });
+    }
 
-		const slug = slugify(name);
-		const existingSlug = await Category.findOne({ slug });
-		if (existingSlug) {
-			return res.status(400).json({ message: "Category with a similar name already exists" });
-		}
+    const slug = slugify(name);
 
-		let cloudinaryResponse = null;
-		if (image) {
-			cloudinaryResponse = await cloudinary.uploader.upload(image, {
-				folder: "categories",
-			});
-		}
+    if (!slug) {
+      return res.status(400).json({
+        message: "Category name must contain valid alphanumeric characters",
+      });
+    }
+    const existingSlug = await Category.findOne({ slug });
+    if (existingSlug) {
+      return res
+        .status(400)
+        .json({ message: "Category with a similar name already exists" });
+    }
 
-		const category = await Category.create({
-			name,
-			slug,
-			imageUrl: cloudinaryResponse?.secure_url ? cloudinaryResponse.secure_url : "",
-		});
+    let cloudinaryResponse = null;
+    if (image) {
+      cloudinaryResponse = await cloudinary.uploader.upload(image, {
+        folder: "categories",
+      });
+    }
 
-		res.status(201).json(category);
-	} catch (error) {
-		console.log("Error in createCategory controller:", error.message);
-		res.status(500).json({ message: "Server error", error: error.message });
-	}
+    const category = await Category.create({
+      name,
+      slug,
+      imageUrl: cloudinaryResponse?.secure_url
+        ? cloudinaryResponse.secure_url
+        : "",
+    });
+
+    res.status(201).json(category);
+  } catch (error) {
+    // EDGE CASE FIX 5: Handle concurrent request DB race conditions gracefully
+    if (error.code === 11000) {
+      return res
+        .status(400)
+        .json({ message: "Category name or slug already exists" });
+    }
+    console.log("Error in createCategory controller:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 };
 
 export const deleteCategory = async (req, res) => {
-	try {
-		const category = await Category.findById(req.params.id);
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: "Invalid category ID format" });
+    }
+    const category = await Category.findById(req.params.id);
 
-		if (!category) {
-			return res.status(404).json({ message: "Category not found" });
-		}
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
 
-		if (category.imageUrl) {
-			const publicId = category.imageUrl.split("/").pop().split(".")[0];
-			try {
-				await cloudinary.uploader.destroy(`categories/${publicId}`);
-				console.log("Deleted category image from Cloudinary");
-			} catch (error) {
-				console.log("Error deleting image from Cloudinary:", error);
-			}
-		}
+    await Category.findByIdAndDelete(req.params.id);
+    if (category.imageUrl) {
+      const publicId = category.imageUrl.split("/").pop().split(".")[0];
+      try {
+        await cloudinary.uploader.destroy(`categories/${publicId}`);
+        console.log("Deleted category image from Cloudinary");
+      } catch (error) {
+        // Logged but not thrown, keeping the API resilient if Cloudinary blips
+        console.log("Error deleting image from Cloudinary:", error.message);
+      }
+    }
 
-		await Category.findByIdAndDelete(req.params.id);
-		res.json({ message: "Category deleted successfully" });
-	} catch (error) {
-		console.log("Error in deleteCategory controller:", error.message);
-		res.status(500).json({ message: "Server error", error: error.message });
-	}
+    res.json({ message: "Category deleted successfully" });
+  } catch (error) {
+    console.log("Error in deleteCategory controller:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 };
