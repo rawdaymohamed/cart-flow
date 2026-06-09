@@ -72,7 +72,9 @@ describe("PUT /api/cart/:id", () => {
       }),
     ]);
 
-    const updatedUser = await User.findOne({ email: "update.cart@example.com" });
+    const updatedUser = await User.findOne({
+      email: "update.cart@example.com",
+    });
     expect(updatedUser.cartItems).toHaveLength(1);
     expect(updatedUser.cartItems[0].product.toString()).toBe(
       product._id.toString(),
@@ -134,6 +136,110 @@ describe("PUT /api/cart/:id", () => {
     expect(updatedUser.cartItems[0].quantity).toBe(1);
   });
 
+  it("rejects negative quantity", async () => {
+    const product = await Product.create({
+      name: "Chair",
+      description: "Office chair",
+      price: 180,
+      image: "https://example.com/chair.jpg",
+      category: "Furniture",
+    });
+
+    const cookies = await loginAs({
+      name: "Negative Quantity Customer",
+      email: "negative.quantity@example.com",
+      password: "password123",
+    });
+
+    const res = await request(app)
+      .put(`/api/cart/${product._id.toString()}`)
+      .set("Cookie", cookies)
+      .send({ quantity: -1 });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Quantity cannot be negative",
+      }),
+    );
+  });
+
+  it("rejects missing quantity", async () => {
+    const product = await Product.create({
+      name: "Desk",
+      description: "Standing desk",
+      price: 350,
+      image: "https://example.com/desk.jpg",
+      category: "Furniture",
+    });
+
+    const cookies = await loginAs({
+      name: "Missing Quantity Customer",
+      email: "missing.quantity.field@example.com",
+      password: "password123",
+    });
+
+    const res = await request(app)
+      .put(`/api/cart/${product._id.toString()}`)
+      .set("Cookie", cookies)
+      .send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Quantity is required",
+      }),
+    );
+  });
+
+  it("rejects non-number quantity", async () => {
+    const product = await Product.create({
+      name: "Lamp",
+      description: "Desk lamp",
+      price: 45,
+      image: "https://example.com/lamp.jpg",
+      category: "Furniture",
+    });
+
+    const cookies = await loginAs({
+      name: "String Quantity Customer",
+      email: "string.quantity@example.com",
+      password: "password123",
+    });
+
+    const res = await request(app)
+      .put(`/api/cart/${product._id.toString()}`)
+      .set("Cookie", cookies)
+      .send({ quantity: "two" });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Quantity must be a number",
+      }),
+    );
+  });
+
+  it("rejects invalid product id", async () => {
+    const cookies = await loginAs({
+      name: "Invalid ID Customer",
+      email: "invalid.product.id@example.com",
+      password: "password123",
+    });
+
+    const res = await request(app)
+      .put("/api/cart/not-an-objectid")
+      .set("Cookie", cookies)
+      .send({ quantity: 2 });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Invalid product ID",
+      }),
+    );
+  });
+
   it("returns 404 when the product is not in the cart", async () => {
     const product = await Product.create({
       name: "Headphones",
@@ -157,7 +263,7 @@ describe("PUT /api/cart/:id", () => {
     expect(res.status).toBe(404);
     expect(res.body).toEqual(
       expect.objectContaining({
-        message: "Product not found",
+        message: "Product not found in cart",
       }),
     );
   });
