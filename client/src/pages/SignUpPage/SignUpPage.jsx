@@ -3,22 +3,41 @@ import { Link } from "react-router-dom";
 import { UserPlus, Mail, Lock, User, ArrowRight, Loader } from "lucide-react";
 import { motion } from "framer-motion";
 import { useUserStore } from "../../stores/useUserStore";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
-const SignUpPage = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+const signupSchema = z
+  .object({
+    name: z.string().min(1, "Full name is required"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords must match",
+    path: ["confirmPassword"], // Roots the error to the confirmPassword field
   });
 
+const SignUpPage = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
   const { signup, loading } = useUserStore();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    signup(formData);
+  const onSubmit = (data) => {
+    signup(data);
   };
-
   return (
     <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <motion.div
@@ -39,7 +58,7 @@ const SignUpPage = () => {
         transition={{ duration: 0.8, delay: 0.3, ease: "easeInOut" }}
       >
         <div className="px-4 py-8 border shadow bg-panel sm:rounded-lg sm:px-10 border-line">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <label
                 htmlFor="name"
@@ -54,15 +73,16 @@ const SignUpPage = () => {
                 <input
                   id="name"
                   type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  {...register("name")}
                   className="block w-full px-3 py-2 pl-10 border rounded-md shadow-sm placeholder-mutedAlt bg-panelAlt border-line focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                   placeholder="John Doe"
                 />
               </div>
+              {errors.name && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -78,16 +98,17 @@ const SignUpPage = () => {
                 </div>
                 <input
                   id="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  type="text"
+                  {...register("email")}
                   className="block w-full px-3 py-2 pl-10 border rounded-md shadow-sm placeholder-mutedAlt bg-panelAlt border-line focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                   placeholder="you@example.com"
                 />
               </div>
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -104,15 +125,16 @@ const SignUpPage = () => {
                 <input
                   id="password"
                   type="password"
-                  required
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
+                  {...register("password")}
                   className="block w-full px-3 py-2 pl-10 border rounded-md shadow-sm placeholder-mutedAlt bg-panelAlt border-line focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                   placeholder="••••••••"
                 />
               </div>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -129,18 +151,16 @@ const SignUpPage = () => {
                 <input
                   id="confirmPassword"
                   type="password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      confirmPassword: e.target.value,
-                    })
-                  }
+                  {...register("confirmPassword")}
                   className="block w-full px-3 py-2 pl-10 border rounded-md shadow-sm placeholder-mutedAlt bg-panelAlt border-line focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                   placeholder="••••••••"
                 />
               </div>
+              {errors.confirmPassword && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </div>
 
             <button

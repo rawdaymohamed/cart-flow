@@ -62,11 +62,69 @@ describe("SignUp Page", () => {
         <SignUpPage />
       </MemoryRouter>,
     );
-    const user = userEvent.setup();
     const submitButton = screen.getByRole("button");
-    await user.click(submitButton);
     expect(submitButton).toBeDisabled();
     expect(screen.getByText(/loading.../i)).toBeInTheDocument();
     expect(screen.queryByText(/sign up/i)).not.toBeInTheDocument();
+  });
+});
+describe("SignUp Page Frontend Validation", () => {
+  beforeEach(() => {
+    mockSignup.mockClear();
+    storeState.loading = false;
+  });
+  it("displays validation errors for invalid email format and short password", async () => {
+    render(
+      <MemoryRouter>
+        <SignUpPage />
+      </MemoryRouter>,
+    );
+    const user = userEvent.setup();
+
+    // Type bad data
+    await user.type(screen.getByLabelText(/full name/i), "Rawda");
+    await user.type(screen.getByLabelText(/email/i), "not-an-email");
+    await user.type(screen.getByLabelText(/^password$/i), "123"); // Too short
+    await user.type(screen.getByLabelText(/confirm password/i), "123");
+
+    await user.click(screen.getByRole("button", { name: /sign up/i }));
+
+    // Assert Zod error messages appear on screen
+    expect(
+      await screen.findByText(/invalid email address/i),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText(/password must be at least 6 characters/i),
+    ).toBeInTheDocument();
+
+    // CRUCIAL: Assert that the store was NEVER called because validation blocked it
+    expect(mockSignup).not.toHaveBeenCalled();
+  });
+
+  it("displays validation error when passwords do not match", async () => {
+    render(
+      <MemoryRouter>
+        <SignUpPage />
+      </MemoryRouter>,
+    );
+    const user = userEvent.setup();
+
+    await user.type(screen.getByLabelText(/full name/i), "Rawda");
+    await user.type(screen.getByLabelText(/email/i), "rawda@test.com");
+    await user.type(screen.getByLabelText(/^password$/i), "Rawda12345");
+    await user.type(
+      screen.getByLabelText(/confirm password/i),
+      "WrongPassword123",
+    ); // Mismatch
+
+    await user.click(screen.getByRole("button", { name: /sign up/i }));
+
+    // Assert matching error message appears
+    expect(
+      await screen.findByText(/passwords must match/i),
+    ).toBeInTheDocument();
+
+    // Assert the store was blocked
+    expect(mockSignup).not.toHaveBeenCalled();
   });
 });
