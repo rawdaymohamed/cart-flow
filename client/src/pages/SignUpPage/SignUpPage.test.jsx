@@ -1,15 +1,18 @@
-import { render, screen } from "@testing-library/react";
+import { getByText, render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import SignUpPage from "./SignUpPage";
 import { MemoryRouter } from "react-router-dom";
-const { mockSignup } = vi.hoisted(() => ({
+
+const { mockSignup, storeState } = vi.hoisted(() => ({
   mockSignup: vi.fn(),
+  storeState: { user: null, loading: true },
 }));
+
 vi.mock("../../stores/useUserStore", () => ({
   useUserStore: () => ({
-    user: null,
-    loading: false,
+    user: storeState.user,
+    loading: storeState.loading,
     signup: mockSignup,
   }),
 }));
@@ -17,6 +20,7 @@ vi.mock("../../stores/useUserStore", () => ({
 describe("SignUp Page", () => {
   beforeEach(() => {
     mockSignup.mockClear();
+    storeState.loading = false;
   });
   it("renders correctly", () => {
     render(
@@ -50,5 +54,19 @@ describe("SignUp Page", () => {
         confirmPassword: "Rawda12345",
       }),
     );
+  });
+  it("disables the submit button and shows loading indicator when submission in progress", async () => {
+    storeState.loading = true;
+    render(
+      <MemoryRouter>
+        <SignUpPage />
+      </MemoryRouter>,
+    );
+    const user = userEvent.setup();
+    const submitButton = screen.getByRole("button");
+    await user.click(submitButton);
+    expect(submitButton).toBeDisabled();
+    expect(screen.getByText(/loading.../i)).toBeInTheDocument();
+    expect(screen.queryByText(/sign up/i)).not.toBeInTheDocument();
   });
 });
