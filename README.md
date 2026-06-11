@@ -132,6 +132,20 @@ npm run test:watch
 npm run test:coverage
 ```
 
+### Running Frontend Tests
+
+Test Automation (Client)
+
+```
+cd client
+
+# Run all server tests once
+npm run test
+
+# Run tests and generate an interactive code coverage overview report
+npm run test:coverage
+```
+
 ## Notes
 
 - The frontend runs on Vite’s default port, usually `http://localhost:5173`
