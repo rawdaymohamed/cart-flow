@@ -14,6 +14,16 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    setupFiles: "./src/setupTests.js", // Points to your setup config
+    setupFiles: "./src/setupTests.js",
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"], // 'html' generates a clickable UI report!
+      include: ["src/**/*"], // Only check files in src
+      exclude: [
+        "src/main.jsx",
+        "src/vite-env.d.ts",
+        "**/*.test.jsx", // Don't profile the test files themselves
+      ],
+    },
   },
 });

@@ -26,6 +26,7 @@ dist-ssr
 *.sw?
 client/.env
 client/node_modules
+client/coverage
 server/.env
 server/node_modules
 server/coverage
