@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { UserPlus, Mail, Lock, User, ArrowRight, Loader } from "lucide-react";
 import { motion } from "framer-motion";
-import { useUserStore } from "../stores/useUserStore";
+import { useUserStore } from "../../stores/useUserStore";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -38,7 +38,7 @@ const SignUpPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3, ease: "easeInOut" }}
       >
-        <div className="px-4 py-8 bg-panel shadow sm:rounded-lg sm:px-10 border border-line">
+        <div className="px-4 py-8 border shadow bg-panel sm:rounded-lg sm:px-10 border-line">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
@@ -59,7 +59,7 @@ const SignUpPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="block w-full px-3 py-2 pl-10 placeholder-mutedAlt bg-panelAlt border border-line rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 border rounded-md shadow-sm placeholder-mutedAlt bg-panelAlt border-line focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                   placeholder="John Doe"
                 />
               </div>
@@ -84,7 +84,7 @@ const SignUpPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="block w-full px-3 py-2 pl-10 placeholder-mutedAlt bg-panelAlt border border-line rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 border rounded-md shadow-sm placeholder-mutedAlt bg-panelAlt border-line focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                   placeholder="you@example.com"
                 />
               </div>
@@ -109,7 +109,7 @@ const SignUpPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="block w-full px-3 py-2 pl-10 placeholder-mutedAlt bg-panelAlt border border-line rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 border rounded-md shadow-sm placeholder-mutedAlt bg-panelAlt border-line focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                   placeholder="••••••••"
                 />
               </div>
@@ -137,7 +137,7 @@ const SignUpPage = () => {
                       confirmPassword: e.target.value,
                     })
                   }
-                  className="block w-full px-3 py-2 pl-10 placeholder-mutedAlt bg-panelAlt border border-line rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
+                  className="block w-full px-3 py-2 pl-10 border rounded-md shadow-sm placeholder-mutedAlt bg-panelAlt border-line focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                   placeholder="••••••••"
                 />
               </div>
@@ -145,7 +145,7 @@ const SignUpPage = () => {
 
             <button
               type="submit"
-              className="flex justify-center w-full px-4 py-2 text-sm font-medium text-ink transition duration-150 ease-in-out border border-transparent rounded-md shadow-sm bg-accent hover:bg-accentHover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50"
+              className="flex justify-center w-full px-4 py-2 text-sm font-medium transition duration-150 ease-in-out border border-transparent rounded-md shadow-sm text-ink bg-accent hover:bg-accentHover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50"
               disabled={loading}
             >
               {loading ? (
