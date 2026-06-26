@@ -4,6 +4,7 @@ import { useProductStore } from "../stores/useProductStore";
 import { useCategoryStore } from "../stores/useCategoryStore";
 import FeaturedProducts from "../components/FeaturedProducts";
 import LoadingSpinner from "../components/LoadingSpinner";
+import CategoryItemSkeleton from "../components/CategorySkeleton";
 
 const HomePage = () => {
   const { fetchFeaturedProducts, products, isLoading } = useProductStore();
@@ -29,8 +30,10 @@ const HomePage = () => {
         </p>
 
         {categoriesLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <LoadingSpinner />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <CategoryItemSkeleton key={index} />
+            ))}
           </div>
         ) : categories.length === 0 ? (
           <p className="py-10 text-lg text-center text-mutedAlt">
