@@ -4,42 +4,50 @@ import { useUserStore } from "../stores/useUserStore";
 import { useCartStore } from "../stores/useCartStore";
 
 const ProductCard = ({ product }) => {
-	const { user } = useUserStore();
-	const { addToCart } = useCartStore();
-	const handleAddToCart = () => {
-		if (!user) {
-			toast.error("Please login to add products to cart", { id: "login" });
-			return;
-		} else {
-			// add to cart
-			addToCart(product);
-		}
-	};
+  const { user } = useUserStore();
+  const { addToCart } = useCartStore();
+  const handleAddToCart = () => {
+    if (!user) {
+      toast.error("Please login to add products to cart", { id: "login" });
+      return;
+    } else {
+      // add to cart
+      addToCart(product);
+    }
+  };
 
-	return (
-		<div className='flex w-full relative flex-col overflow-hidden rounded-lg border border-line bg-panel shadow-lg'>
-			<div className='relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl'>
-				<img className='object-cover w-full' src={product.image} alt='product image' />
-				<div className='absolute inset-0 bg-ink/20' />
-			</div>
+  return (
+    <div className="relative flex flex-col w-full overflow-hidden border rounded-lg shadow-lg border-line bg-panel">
+      <div className="relative flex mx-3 mt-3 overflow-hidden h-60 rounded-xl">
+        <img
+          className="object-cover w-full"
+          src={product.image}
+          alt="product image"
+        />
+        <div className="absolute inset-0 bg-ink/20" />
+      </div>
 
-			<div className='mt-4 px-5 pb-5'>
-				<h5 className='text-xl font-semibold tracking-tight text-white'>{product.name}</h5>
-				<div className='mt-2 mb-5 flex items-center justify-between'>
-					<p>
-						<span className='text-3xl font-bold text-accent'>${product.price}</span>
-					</p>
-				</div>
-				<button
-					className='flex items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-center text-sm font-medium
-					 text-ink hover:bg-accentHover focus:outline-none focus:ring-4 focus:ring-accentSoft w-full'
-					onClick={handleAddToCart}
-				>
-					<ShoppingCart size={22} className='mr-2' />
-					Add to cart
-				</button>
-			</div>
-		</div>
-	);
+      <div className="px-5 pb-5 mt-4">
+        <h5 className="text-xl font-semibold tracking-tight text-white">
+          {product.name}
+        </h5>
+        <div className="flex items-center justify-between mt-2 mb-5">
+          <p>
+            <span className="text-3xl font-bold text-accent">
+              ${product.price}
+            </span>
+          </p>
+        </div>
+        <button
+          className="flex items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-center text-sm font-medium
+					 text-ink hover:bg-accentHover focus:outline-none focus:ring-4 focus:ring-accentSoft w-full"
+          onClick={handleAddToCart}
+        >
+          <ShoppingCart size={22} className="mr-2" />
+          Add to cart
+        </button>
+      </div>
+    </div>
+  );
 };
 export default ProductCard;

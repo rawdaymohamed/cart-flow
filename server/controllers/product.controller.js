@@ -40,6 +40,8 @@ export const getFeaturedProducts = async (req, res) => {
 };
 
 export const createProduct = async (req, res) => {
+  let uploadedImagePublicId = null;
+
   try {
     const { name, description, price, image, category } = req.body;
 
@@ -49,25 +51,45 @@ export const createProduct = async (req, res) => {
       cloudinaryResponse = await cloudinary.uploader.upload(image, {
         folder: "products",
       });
+
+      uploadedImagePublicId = cloudinaryResponse.public_id;
     }
 
     const product = await Product.create({
       name,
       description,
       price,
-      image: cloudinaryResponse?.secure_url
-        ? cloudinaryResponse.secure_url
-        : "",
+      image: cloudinaryResponse?.secure_url || "",
+      imagePublicId: cloudinaryResponse?.public_id || "",
       category,
     });
 
     res.status(201).json(product);
   } catch (error) {
-    console.log("Error in createProduct controller", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.log("Error in createProduct controller:", error.message);
+
+    // Cleanup Cloudinary image if DB creation failed after upload
+    if (uploadedImagePublicId) {
+      try {
+        await cloudinary.uploader.destroy(uploadedImagePublicId);
+        console.log(
+          "Orphaned Cloudinary image deleted:",
+          uploadedImagePublicId,
+        );
+      } catch (deleteError) {
+        console.log(
+          "Failed to delete orphaned Cloudinary image:",
+          deleteError.message,
+        );
+      }
+    }
+
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
-
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;

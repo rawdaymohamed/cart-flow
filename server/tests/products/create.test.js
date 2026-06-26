@@ -2,7 +2,7 @@ import request from "supertest";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const cloudinaryUploadMock = vi.hoisted(() => vi.fn());
-
+const cloudinaryDestroyMock = vi.hoisted(() => vi.fn());
 vi.mock("../../lib/redis.js", () => ({
   redis: {
     get: vi.fn(),
@@ -15,6 +15,7 @@ vi.mock("../../lib/cloudinary.js", () => ({
   default: {
     uploader: {
       upload: cloudinaryUploadMock,
+      destroy: cloudinaryDestroyMock,
     },
   },
 }));
@@ -53,9 +54,11 @@ describe("POST /api/products", () => {
   };
 
   it("rejects requests without authentication", async () => {
-    const res = await request(app).post("/api/products").send({
-      ...validProductPayload,
-    });
+    const res = await request(app)
+      .post("/api/products")
+      .send({
+        ...validProductPayload,
+      });
 
     expect(res.status).toBe(401);
     expect(res.body).toEqual(
@@ -96,7 +99,8 @@ describe("POST /api/products", () => {
     });
 
     cloudinaryUploadMock.mockResolvedValue({
-      secure_url: "https://res.cloudinary.com/demo/image/upload/v1/products/phone.jpg",
+      secure_url:
+        "https://res.cloudinary.com/demo/image/upload/v1/products/phone.jpg",
     });
 
     const res = await request(app)
@@ -110,18 +114,24 @@ describe("POST /api/products", () => {
         name: validProductPayload.name,
         description: validProductPayload.description,
         price: validProductPayload.price,
-        image: "https://res.cloudinary.com/demo/image/upload/v1/products/phone.jpg",
+        image:
+          "https://res.cloudinary.com/demo/image/upload/v1/products/phone.jpg",
         category: validProductPayload.category,
         isFeatured: false,
       }),
     );
 
     expect(cloudinaryUploadMock).toHaveBeenCalledTimes(1);
-    expect(cloudinaryUploadMock).toHaveBeenCalledWith(validProductPayload.image, {
-      folder: "products",
-    });
+    expect(cloudinaryUploadMock).toHaveBeenCalledWith(
+      validProductPayload.image,
+      {
+        folder: "products",
+      },
+    );
 
-    const savedProduct = await Product.findOne({ name: validProductPayload.name });
+    const savedProduct = await Product.findOne({
+      name: validProductPayload.name,
+    });
 
     expect(savedProduct).toBeTruthy();
     expect(savedProduct.toObject()).toEqual(
@@ -129,7 +139,8 @@ describe("POST /api/products", () => {
         name: validProductPayload.name,
         description: validProductPayload.description,
         price: validProductPayload.price,
-        image: "https://res.cloudinary.com/demo/image/upload/v1/products/phone.jpg",
+        image:
+          "https://res.cloudinary.com/demo/image/upload/v1/products/phone.jpg",
         category: validProductPayload.category,
         isFeatured: false,
       }),
@@ -160,7 +171,9 @@ describe("POST /api/products", () => {
     expect(res.body.message).toMatch(/image/i);
     expect(cloudinaryUploadMock).not.toHaveBeenCalled();
 
-    const savedProduct = await Product.findOne({ name: payloadWithoutImage.name });
+    const savedProduct = await Product.findOne({
+      name: payloadWithoutImage.name,
+    });
     expect(savedProduct).toBeNull();
   });
 
@@ -186,7 +199,9 @@ describe("POST /api/products", () => {
       }),
     );
 
-    const savedProduct = await Product.findOne({ name: validProductPayload.name });
+    const savedProduct = await Product.findOne({
+      name: validProductPayload.name,
+    });
     expect(savedProduct).toBeNull();
   });
 
@@ -266,5 +281,56 @@ describe("POST /api/products", () => {
 
     const products = await Product.find({});
     expect(products).toHaveLength(0);
+  });
+  it("deletes uploaded Cloudinary image when product creation fails", async () => {
+    const adminCookies = await loginAs({
+      name: "Admin",
+      email: "admin-db-fail@example.com",
+      password: "password123",
+      role: "admin",
+    });
+
+    cloudinaryUploadMock.mockResolvedValue({
+      secure_url:
+        "https://res.cloudinary.com/demo/image/upload/v1/products/phone.jpg",
+      public_id: "products/phone",
+    });
+
+    cloudinaryDestroyMock.mockResolvedValue({
+      result: "ok",
+    });
+
+    vi.spyOn(Product, "create").mockRejectedValueOnce(
+      new Error("Database create failed"),
+    );
+
+    const res = await request(app)
+      .post("/api/products")
+      .set("Cookie", adminCookies)
+      .send(validProductPayload);
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Server error",
+      }),
+    );
+
+    expect(cloudinaryUploadMock).toHaveBeenCalledTimes(1);
+    expect(cloudinaryUploadMock).toHaveBeenCalledWith(
+      validProductPayload.image,
+      {
+        folder: "products",
+      },
+    );
+
+    expect(cloudinaryDestroyMock).toHaveBeenCalledTimes(1);
+    expect(cloudinaryDestroyMock).toHaveBeenCalledWith("products/phone");
+
+    const savedProduct = await Product.findOne({
+      name: validProductPayload.name,
+    });
+
+    expect(savedProduct).toBeNull();
   });
 });

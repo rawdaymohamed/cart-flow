@@ -3,7 +3,7 @@ import { useProductStore } from "../stores/useProductStore";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
-import LoadingSpinner from "../components/LoadingSpinner";
+import ProductCardSkeleton from "../components/ProductCardSkeleton";
 const CategoryPage = () => {
   const { fetchProductsByCategory, products, loading } = useProductStore();
 
@@ -13,12 +13,12 @@ const CategoryPage = () => {
     fetchProductsByCategory(category);
   }, [fetchProductsByCategory, category]);
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center py-20">
-        <LoadingSpinner />
-      </div>
-    );
+  // if (loading)
+  //   return (
+  //     <div className="flex items-center justify-center py-20">
+  //       <LoadingSpinner />
+  //     </div>
+  //   );
   return (
     <div className="min-h-screen">
       <div className="relative z-10 max-w-screen-xl px-4 py-16 mx-auto sm:px-6 lg:px-8">
@@ -37,15 +37,19 @@ const CategoryPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          {products?.length === 0 && (
+          {loading ? (
+            Array.from({ length: 4 }).map((_, index) => (
+              <ProductCardSkeleton key={index} />
+            ))
+          ) : products?.length === 0 ? (
             <h2 className="text-3xl font-semibold text-center text-muted col-span-full">
               No products found
             </h2>
+          ) : (
+            products?.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))
           )}
-
-          {products?.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
         </motion.div>
       </div>
     </div>
